@@ -14,7 +14,7 @@ namespace OutOfControl
         }
         public override void Update()
         {
-
+            Console.WriteLine("Hello world");
         }
 
     }
