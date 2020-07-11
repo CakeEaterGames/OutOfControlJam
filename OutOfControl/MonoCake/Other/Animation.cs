@@ -37,12 +37,19 @@ namespace MonoCake
             return startValue + (endValue - startValue) * progress;
         }
 
-        public static double Recurrent(double currentValue = 0, double endValue = 1, double startTime = 0, double duration = 1, double currentTime = 0, double divBy = 2)
+        public static double Recurrent(double currentValue = 0, double endValue = 1, double startTime = 0, double duration = 1, double currentTime = 0, double divBy = 2, double smallestStep=0)
         {
             if (currentTime < startTime || currentTime > startTime + duration)
                 return currentValue;
 
-            return currentValue + (endValue - currentValue) / divBy;
+            var a = currentValue + (endValue - currentValue) / divBy;
+
+            /*  if (currentValue-a<smallestStep)
+              {
+                  a
+              }*/
+
+            return a;
         }
 
         public static double Trigger(double newValue = 1, double time = 0, double currentTime = 0, double currentValue = 0)

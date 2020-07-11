@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Input;
 
 namespace OutOfControl
 {
@@ -13,5 +14,86 @@ namespace OutOfControl
         static double global_Luck = 1;
         static double global_Despair = 1;
 
+        public Gameplay()
+        {
+            StartFight();
+        }
+
+        public LevelGrid Grid;
+        public ActionManager ActionManager;
+
+        public void StartFight() {
+
+            InitGrid();
+            SpawnEnemies();
+            SpawnPlayers();
+
+            foreach (Entity e in Grid.Entities)
+            {
+                Console.WriteLine(Grid.LookfromEntity(e, LevelGrid.direction.up));
+            }
+
+        }
+
+        public void InitGrid()
+        {
+            Grid = new LevelGrid();
+            Grid.AddUR(this);
+            Grid.BaseRenderParameters.X = 1280 / 2;
+            Grid.BaseRenderParameters.Y = 720 / 2;
+            Grid.BaseRenderParameters.ScaleW = 3;
+            Grid.BaseRenderParameters.ScaleH = 3;
+
+            ActionManager = new ActionManager();
+            ActionManager.grid = Grid;
+        }
+        public void SpawnEnemies()
+        {
+            Entity.CreateByType(Entity.EType.Skeleton, Grid, 0, 0);
+            Entity.CreateByType(Entity.EType.DarkKnight, Grid, 1, 0);
+            Entity.CreateByType(Entity.EType.DarkWizard, Grid, 2, 0);
+            Entity.CreateByType(Entity.EType.Witch, Grid, 3, 1);
+          
+
+        }
+        public void SpawnPlayers()
+        {
+            Entity.CreateByType(Entity.EType.warrior, Grid, 0, 5);
+            Entity.CreateByType(Entity.EType.healer, Grid, 1, 5);
+            Entity.CreateByType(Entity.EType.ranger, Grid, 2, 5);
+            Entity.CreateByType(Entity.EType.stoner, Grid, 3, 5);
+            Entity.CreateByType(Entity.EType.wizard, Grid, 4, 5);
+            Entity.CreateByType(Entity.EType.buff_guy, Grid, 0, 4);
+     
+
+        }
+
+        public override void Update()
+        {
+            // Console.WriteLine(123);
+            if (KEY.IsTyped(Keys.Q))
+            {
+                ActionManager.PerformAction(ActionManager.Action.attack, false);
+            }
+
+            if (KEY.IsTyped(Keys.Up))
+            {
+                ActionManager.PerformAction(ActionManager.Action.up, false);
+            }
+            if (KEY.IsTyped(Keys.Down))
+            {
+                ActionManager.PerformAction(ActionManager.Action.down, false);
+            }
+            if (KEY.IsTyped(Keys.Left))
+            {
+                ActionManager.PerformAction(ActionManager.Action.left, false);
+            }
+            if (KEY.IsTyped(Keys.Right))
+            {
+                ActionManager.PerformAction(ActionManager.Action.right, false);
+            }
+
+
+        }
     }
 }

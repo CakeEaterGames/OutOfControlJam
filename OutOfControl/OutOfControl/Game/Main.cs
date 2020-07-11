@@ -5,16 +5,17 @@ namespace OutOfControl
 {
     public class Main : BasicObject
     {
-
+    
+        SceneManager SceneManager = new SceneManager();
         public Main()
         {
-            GameObject a = new GameObject();
-            a.SetImg(GlobalContent.LoadImg("ananas", true));
-            a.AddUR(this);
+            SceneManager.SetScene(new Gameplay());
+            SceneManager.AddUR(this);
+            SceneManager.CurrentScene.AddUR();
         }
         public override void Update()
         {
-            Console.WriteLine("Hello world");
+          
         }
 
     }

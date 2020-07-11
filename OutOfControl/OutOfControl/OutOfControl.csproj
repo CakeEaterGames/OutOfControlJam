@@ -74,6 +74,7 @@
     <Compile Include="Game\ActionManager.cs" />
     <Compile Include="Game\Entity.cs" />
     <Compile Include="Game\Gameplay.cs" />
+    <Compile Include="Game\HPbar.cs" />
     <Compile Include="Game\LevelGrid.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game\Main.cs" />
@@ -95,6 +96,19 @@
     <Content Include="Content\Images\x64.png" />
     <Content Include="Content\Images\x8.png" />
     <Content Include="Icon.ico" />
+    <EmbeddedResource Include="Resources\Images\Entities\friends\Warrior.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\friends\Healer.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\friends\Buff_Guy.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\enemies\DarkKnight.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\enemies\DarkWizard.png" />
+    <EmbeddedResource Include="Resources\Images\UI\hp bar.png" />
+    <EmbeddedResource Include="Resources\Images\UI\hp frame.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\friends\Ranger.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\enemies\Skeleton.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\friends\Stoner.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\enemies\Witch.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\friends\Wizard.png" />
+    <EmbeddedResource Include="Resources\Images\UI\GridCell.png" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -108,11 +122,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Images\ananas.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoCake\MonoCake.csproj">

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoCake;
+using MonoCake.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,19 +9,54 @@ using System.Threading.Tasks;
 
 namespace OutOfControl
 {
-    class LevelGrid
+    public class LevelGrid : BasicObject
     {
-        public int W = 6;
-        public int H = 6;
+        public int gridW = 6;
+        public int gridH = 6;
+        public int cellH = 36;
+        public int cellW = 36;
 
-        List<List<Entity>> EntitiesGrid = new List<List<Entity>>();
+        public double offsetX;
+        public double offsetY;
+
+        public List<List<Entity>> EntitiesGrid = new List<List<Entity>>();
 
         public List<Entity> Entities = new List<Entity>();
 
+        
+        public void DrawGrid()
+        {
+            offsetX = (gridW / 2.0) * cellW;
+            offsetY = (gridH / 2.0) * cellH;
+            for (int i = 0; i < gridW; i++)
+            {
+                for (int j = 0; j < gridH; j++)
+                {
+                    GameObject c = new GameObject(GlobalContent.LoadImg("GridCell",true));
+                    c.
+                       // Scale(3).
+                       // SetCenter(5).
+                        SetXY(i*(cellW) -offsetX, j* (cellH) - offsetY).
+                        AddRender(this);
+                    c.Alpha = 0.25;
+                }
+            }
+        }
+
+        public void SetRealEntityCoords(Entity p)
+        {
+            if (isInGrid(p.pX,p.pY))
+            {
+            //p.SetXY(v1*cellW - offsetX, v2 * cellH - offsetX);
+            p.GoalX = p.pX * cellW - offsetX;
+            p.GoalY = p.pY * cellH - offsetY;
+            }
+        }
+
         public LevelGrid(int w = 6, int h= 6)
         {
-            W = w;
-            H = h;
+            gridW = w;
+            gridH = h;
             for (int i=0;i<w;i++)
             {
                 EntitiesGrid.Add(new List<Entity>());
@@ -28,17 +65,27 @@ namespace OutOfControl
                     EntitiesGrid[i].Add(null);
                 }
             }
+
+            DrawGrid();
         }
 
         public void SetEntity(Entity e)
         {
-            if (isInGrid(e.pX, e.pY) && EntitiesGrid[e.pX][e.pY]==null)
+            if (isInGrid(e.pX, e.pY) && EntitiesGrid[e.pX][e.pY] == null)
+            {
                 EntitiesGrid[e.pX][e.pY] = e;
+                if (!Entities.Contains(e))
+                {
+                    Entities.Add(e);
+                }
+            }
+              
+
         }
 
         public void MoveEntity(Entity e, int newX, int newY)
         {
-            if (isInGrid(newX,newY) && GetEntity(newX,newX) == null)
+            if (isInGrid(newX,newY) && GetEntity(newX,newY) == null)
             {
                 RemoveEntity(e);
                 e.pX = newX;
@@ -98,7 +145,7 @@ namespace OutOfControl
 
         public bool isInGrid(int x, int y)
         {
-            return !(x < 0 || x >= W || y < 0 || y >= H);
+            return !(x < 0 || x >= gridW || y < 0 || y >= gridH);
         }
 
 
