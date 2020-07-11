@@ -112,6 +112,37 @@ namespace OutOfControl
             up, down, left, right
         }
 
+        public Entity LookfromEntity(int x, int y, direction d)
+        {
+            int dx, dy, cx, cy;
+            dx = 0;
+            dy = 0;
+
+            if (d == direction.down) dy = 1;
+            if (d == direction.up) dy = -1;
+            if (d == direction.left) dx = 1;
+            if (d == direction.right) dx = -1;
+
+            cx = x;
+            cy = y;
+
+            cx += dx;
+            cy += dy;
+
+            while (isInGrid(cx, cy))
+            {
+                var n = GetEntity(cx, cy);
+                if (n != null)
+                {
+                    return n;
+                }
+                cx += dx;
+                cy += dy;
+            }
+
+            return null;
+        }
+
         public Entity LookfromEntity(Entity e, direction d)
         {
             int dx, dy, cx, cy;

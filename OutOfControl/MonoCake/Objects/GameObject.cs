@@ -42,7 +42,7 @@ namespace MonoCake.Objects
 
         public double Alpha { get => alpha; set => alpha = Tools.Limit(0, 1, value); }
         public bool IsVisable { get; set; } = true;
-        public Color Color { get; set; } = Color.White;
+        public Color color { get; set; } = Color.White;
 
         public double Rotation { get; set; }
 
@@ -483,7 +483,7 @@ namespace MonoCake.Objects
                Img,
                renderRect,
                RenderArea,
-               Color * (float)(Alpha * rp.Alpha),
+               color * (float)(Alpha * rp.Alpha),
                (float)Rotation,
                GetCenter(),
                Orientation,

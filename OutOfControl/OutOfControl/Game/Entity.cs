@@ -1,6 +1,8 @@
-﻿using MonoCake;
+﻿using Microsoft.Xna.Framework;
+using MonoCake;
 using MonoCake.Objects;
 using System;
+using System.Collections.Generic;
 
 namespace OutOfControl
 {
@@ -15,7 +17,7 @@ namespace OutOfControl
         public bool CanAttack = false;
 
         public int damage = 0;
-        public int CritChance = 0;
+        public double CritChance = 0;
         public int level = 1;
 
         public double luck = 1;
@@ -23,11 +25,24 @@ namespace OutOfControl
 
         public EType type = EType.warrior;
 
+        public int currentCycle = 0;
+        public int FreezeAmount = 0;
+        public List<ActionManager.Action> MoveSet = new List<ActionManager.Action>();
+
+        public int DefenceBuff = 0;
+        public int StrengthBuff = 0;
+
         HPbar HPbar;
+        GameObject Mark;
         public Entity()
         {
             HPbar = new HPbar();
             HPbar.AddUR(this);
+
+            Mark = new GameObject();
+            Mark.Alpha = 0;
+            Mark.AddUR(this);
+            Mark.SetImg(GlobalContent.LoadImg("Freeze",true));
         }
 
 
@@ -36,8 +51,8 @@ namespace OutOfControl
 
         public double startX, startY;
 
-        public bool isAtacking = false;
-        double atckTime = 0;
+        public bool isAnimating = false;
+        double AnimTime = 0;
         public void AttackAnim(Entity e)
         {
             startX = X;
@@ -55,9 +70,22 @@ namespace OutOfControl
             }
             
 
-            atckTime = 30;
-            isAtacking = true;
+            AnimTime = 30;
+            isAnimating = true;
         }
+
+
+        public void JumpAnim()
+        {
+            startX = X;
+            startY = Y;
+
+            GoalY = Y - 10;
+          
+            AnimTime = 30;
+            isAnimating = true;
+        }
+
 
         public int shake = 0;
         Random rng = new Random();
@@ -78,29 +106,49 @@ namespace OutOfControl
                 Y += rng.Next(-2, 2);
                 shake--;
             }
-         
+
+            if (Mark.Alpha > 0)
+            {
+                Mark.Alpha -= 1 / 60.0;
+            }
 
             HPbar.BaseRenderParameters.X = X+2;
             HPbar.BaseRenderParameters.Y = Y+H+2.5;
             HPbar.filled = (double)HP / (double)MaxHP;
 
-            if (isAtacking)
+            Mark.SetXY(X,Y);
+
+            if (isAnimating)
             {
-                atckTime--;
-                if (atckTime <= 0)
+                AnimTime--;
+                if (AnimTime <= 0)
                 {
                     GoalX = startX;
                     GoalY = startY;
-                    isAtacking = false;
+                    isAnimating = false;
                 }
+            }
+
+            if (FreezeAmount>0)
+            {
+                color = Color.Blue;
+            }
+            else if (StrengthBuff > 0)
+            {
+                color = Color.Red;
+            }
+            else if (DefenceBuff > 0)
+            {
+                color = Color.Cyan;
             }
             else
             {
-
+                color = Color.White;
             }
+
         }
 
-
+    
         public enum EType
         {
             warrior,
@@ -110,7 +158,6 @@ namespace OutOfControl
             buff_guy,
             stoner,
 
-
             Stone,
 
             Skeleton,
@@ -119,6 +166,46 @@ namespace OutOfControl
             DarkKnight
 
         };
+
+       
+        public void MarkAnim(string image)
+        {
+            Mark.SetImg(GlobalContent.LoadImg(image, true));
+            Mark.Alpha = 1;
+        }
+      
+
+
+        public double LevelMultiplier()
+        {
+            return Math.Pow(1.5, level-1);
+        }
+
+        public double CalcDamage()
+        {
+            var a = damage * LevelMultiplier();
+            if (StrengthBuff>0)
+            {
+                a *= 2;
+                StrengthBuff--;
+            }
+            if (Gameplay.RNG.NextDouble() > CritChance)
+            {
+                a *= 2;
+            }
+            Console.WriteLine(a);
+            return a;
+        }
+
+        public double PreCalcDamage()
+        {
+            var a = damage * LevelMultiplier();
+            if (StrengthBuff > 0)
+            {
+                a *= 2;
+            }
+            return a;
+        }
 
 
         public static Entity CreateByType(EType t,LevelGrid Grid,int x, int y)
@@ -143,14 +230,16 @@ namespace OutOfControl
                 case EType.healer:
                     p.SetImg(GlobalContent.LoadImg("Healer", true));
                     p.MaxHP = 15;
+                    p.damage = 1;
                     break;
                 case EType.ranger:
                     p.SetImg(GlobalContent.LoadImg("Ranger", true));
+                    p.damage = 2;
                     p.MaxHP = 5;
                     break;
                 case EType.buff_guy:
                     p.SetImg(GlobalContent.LoadImg("Buff_Guy", true));
-                    p.CanAttack = true;
+                    //p.CanAttack = true;
                     p.damage = 1;
                     p.MaxHP = 10;
                     break;
@@ -163,6 +252,7 @@ namespace OutOfControl
 
                 case EType.Stone:
                     p.SetImg(GlobalContent.LoadImg("Stone", true));
+                    p.isEnemy = true;
                     p.MaxHP = 10;
                     break;
 
@@ -178,6 +268,11 @@ namespace OutOfControl
                     p.CanAttack = true;
                     p.damage = 2;
                     p.MaxHP = 5;
+
+                    p.MoveSet.Add(ActionManager.Action.attack);
+                    p.MoveSet.Add(ActionManager.Action.attack);
+                    p.MoveSet.Add(ActionManager.Action.no);
+
                     break;
                 case EType.DarkKnight:
                     p.SetImg(GlobalContent.LoadImg("DarkKnight", true));
@@ -185,6 +280,13 @@ namespace OutOfControl
                     p.CanAttack = true;
                     p.damage = 3;
                     p.MaxHP = 5;
+
+                    p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
+                    p.MoveSet.Add(ActionManager.Action.attack);
+                    p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
+                    p.MoveSet.Add(ActionManager.Action.attack);
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.no);
                     break;
                 case EType.DarkWizard:
                     p.SetImg(GlobalContent.LoadImg("DarkWizard", true));
@@ -192,17 +294,40 @@ namespace OutOfControl
                     p.CanAttack = true;
                     p.damage = 1;
                     p.MaxHP = 5;
+
+                    p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
+                    p.MoveSet.Add(ActionManager.Action.fireball);
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.fireball);
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.no);
                     break;
                 case EType.Witch:
                     p.SetImg(GlobalContent.LoadImg("Witch", true));
                     p.isEnemy = true;
                     p.MaxHP = 5;
+
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.Curse);
+
                     break;
 
 
             }
 
             p.HP = p.MaxHP;
+
+            if (p.MoveSet.Count>0)
+            {
+                Random rng = new Random();
+                p.currentCycle = rng.Next(0, 999) % p.MoveSet.Count;
+            }
+           
+
+
 
             p.AddUR(Grid);
 
@@ -215,6 +340,13 @@ namespace OutOfControl
 
 
             return p;
+        }
+
+        public void Freeze(int n)
+        {
+            MarkAnim("Freeze");
+            FreezeAmount = n;
+            color = Color.Blue;  
         }
 
         public override void Destruct()

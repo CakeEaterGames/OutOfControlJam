@@ -60,7 +60,7 @@ namespace MonoCake.Other
                 if (bo is GameObject)
                 {
                     go = (GameObject)bo;
-                    go.Color = Color.White;
+                    go.color = Color.White;
                 }
             }
             isEnabled = false;
@@ -86,7 +86,7 @@ namespace MonoCake.Other
                 if (bo is GameObject)
                 {
                     go = (GameObject)bo;
-                    go.Color = Color.White;
+                    go.color = Color.White;
                 }
             }
 
@@ -148,7 +148,7 @@ namespace MonoCake.Other
                 if (CurrentDebugObject is GameObject)
                 {
                     var a = (GameObject)CurrentDebugObject;
-                    a.Color = Color.White;
+                    a.color = Color.White;
                 }
                 index++;
             }
@@ -157,7 +157,7 @@ namespace MonoCake.Other
                 if (CurrentDebugObject is GameObject)
                 {
                     var a = (GameObject)CurrentDebugObject;
-                    a.Color = Color.White;
+                    a.color = Color.White;
                 }
                 index--;
             }
@@ -171,7 +171,7 @@ namespace MonoCake.Other
             if (CurrentDebugObject is GameObject)
             {
                 var go = (GameObject)CurrentDebugObject;
-                go.Color = Color.Yellow;
+                go.color = Color.Yellow;
             }
 
             if (KEY.IsDown(Keys.LeftControl) && KEY.LClick)

@@ -29,7 +29,7 @@ namespace OutOfControl
 
             bar.X = 1;
 
-            bar.Color = Color.Red;
+            bar.color = Color.Red;
         }
         public override void Update()
         {
