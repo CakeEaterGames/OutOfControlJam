@@ -13,6 +13,19 @@ namespace OutOfControl
 
         public ActionManager()
         {
+            ActionPool.Add(Action.up);
+            ActionPool.Add(Action.down);
+            ActionPool.Add(Action.left);
+            ActionPool.Add(Action.right);
+
+            ActionPool.Add(Action.scatter);
+            ActionPool.Add(Action.swap);
+            ActionPool.Add(Action.swap);
+
+            ActionPool.Add(Action.attack);
+            ActionPool.Add(Action.attack);
+            ActionPool.Add(Action.attack);
+           // ActionPool.Add(Action.defence);
 
         }
 
@@ -26,7 +39,6 @@ namespace OutOfControl
             up, down, left, right,
             swap,
             scatter,
-            random,
 
             fireball, freeze,
 
@@ -40,13 +52,64 @@ namespace OutOfControl
             addStone,
             breakStone,
 
-
-
-
-
             MoveToPlayer,
             Curse,
+            cursed,
+            defence,
         }
+
+
+        List<Action> ActionPool = new List<Action>();
+
+        public void AddCharToPool(Entity.EType t)
+        {
+
+            switch (t)
+            {
+                case Entity.EType.warrior:
+                    addIfNo(Action.strongAttack);
+                    break;
+                case Entity.EType.wizard:
+                    addIfNo(Action.fireball);
+                    addIfNo(Action.freeze);
+                    break;
+                case Entity.EType.ranger:
+                    addIfNo(Action.shoot);
+                    break;
+                case Entity.EType.healer:
+                    addIfNo(Action.heal);
+                    addIfNo(Action.healAll);
+                    break;
+                case Entity.EType.stoner:
+                    addIfNo(Action.addStone);
+                    addIfNo(Action.breakStone);
+                    break;
+                case Entity.EType.buff_guy:
+                    addIfNo(Action.atack_buff);
+                    addIfNo(Action.defence_buff);
+                    break;
+            }
+        }
+
+        void addIfNo(Action t)
+        {
+            if (!ActionPool.Contains(t))
+            {
+                ActionPool.Add(t);
+            }
+        }
+
+        public void AddCurse()
+        {
+            ActionPool.Add(Action.cursed);
+        }
+
+
+        public Action RandomAction()
+        {
+             return ActionPool[Gameplay.RNG.Next(0, ActionPool.Count)];
+        }
+
 
         public void EnemyTurn()
         {
@@ -62,18 +125,18 @@ namespace OutOfControl
                 }
 
                 Entity e = grid.Entities[i];
-                if (e.isEnemy)
+                if (e.isEnemy && e.MoveSet.Count != 0)
                 {
-                  
-                        PerformAction(e, e.MoveSet[e.currentCycle], true, false);
-                    if(e.FreezeAmount <= 0)
+
+                    PerformAction(e, e.MoveSet[e.currentCycle], true, false);
+                    if (e.FreezeAmount <= 0)
                     {
                         e.currentCycle++;
                         e.currentCycle %= e.MoveSet.Count;
                     }
-                      
-                  
-                   
+
+
+
                 }
 
             }
@@ -99,16 +162,16 @@ namespace OutOfControl
 
         public void Hurt(Entity e, double Damage)
         {
-            if (e.DefenceBuff>0)
+            if (e.DefenceBuff > 0)
             {
-                e.HP -= (int)(Damage/2);
+                e.HP -= (int)(Damage / 2);
                 e.DefenceBuff--;
             }
             else
             {
                 e.HP -= (int)Damage;
             }
-         
+
 
 
             e.ShakeAnim();
@@ -133,375 +196,363 @@ namespace OutOfControl
         public void PerformAction(Entity e, Action act, bool forEnemies = false, bool isGolden = false)
         {
 
-            if (e!=null && e.FreezeAmount > 0)
-            {
-                e.FreezeAmount--;
-                if (e.FreezeAmount == 0)
-                {
-                    e.color = Color.White;
-                }
-            }
-            else
-
             if (e != null && (e.isEnemy == forEnemies))
             {
 
-                switch (act)
+
+                if (e != null && e.FreezeAmount > 0)
                 {
-                    case Action.attack:
-                        if (e.CanAttack)
-                        {
-                            Entity look;
-                            if (forEnemies)
+                    e.FreezeAmount--;
+
+                }
+                else
+                {
+
+                    switch (act)
+                    {
+                        
+                        case Action.attack:
+                            if (e.CanAttack)
                             {
-                                look = grid.LookfromEntity(e, LevelGrid.direction.down);
-                            }
-                            else
-                            {
-                                look = grid.LookfromEntity(e, LevelGrid.direction.up);
-                            }
-
-                            if (look != null && (look.isEnemy != forEnemies))
-                            {
-                                e.AttackAnim(look);
-                                Hurt(look, (int)e.CalcDamage());
-                            }
-
-                        }
-                        break;
-
-                    case Action.scatter:
-                        var a = Gameplay.RNG.Next(0, 5);
-                        switch (a)
-                        {
-                            case 1: moveAct(e, Action.up); break;
-                            case 2: moveAct(e, Action.down); break;
-                            case 3: moveAct(e, Action.left); break;
-                            case 4: moveAct(e, Action.right); break;
-                        }
-                        break;
-                    case Action.swap:
-                        {
-                            var en = grid.Entities[Gameplay.RNG.Next(0, grid.Entities.Count)];
-                            while(en.isEnemy != e.isEnemy)
-                            {
-                                en = grid.Entities[Gameplay.RNG.Next(0, grid.Entities.Count)];
-                            }
-                            var tx = e.pX;
-                            var ty = e.pY;
-
-                            grid.RemoveEntity(e);
-                            grid.RemoveEntity(en);
-
-                            e.pX = en.pX;
-                            e.pY = en.pY;
-
-                            en.pX = tx;
-                            en.pY = ty;
-
-                            grid.SetEntity(e);
-                            grid.SetEntity(en);
-
-                            grid.SetRealEntityCoords(en);
-                            grid.SetRealEntityCoords(e);
-                        }
-                        break;
-                    case Action.up:
-                    case Action.down:
-                    case Action.left:
-                    case Action.right:
-                        moveAct(e, act);
-                        break;
-                    case Action.fireball:
-                        if (e.type == Entity.EType.wizard || e.type == Entity.EType.DarkWizard)
-                        {
-                            e.JumpAnim();
-                            Entity look;
-                            if (forEnemies)
-                            {
-                                look = grid.LookfromEntity(e, LevelGrid.direction.down);
-                            }
-                            else
-                            {
-                                look = grid.LookfromEntity(e, LevelGrid.direction.up);
-                            }
-
-                            if (look != null && (look.isEnemy != forEnemies))
-                            {
-                                var dmg = e.CalcDamage();
-
-                                ExplodeAct(look, e.damage);
-                                ExplodeAct(grid.GetEntity(look.pX - 1, look.pY), dmg);
-                                ExplodeAct(grid.GetEntity(look.pX + 1, look.pY), dmg);
-
-                                ExplodeAct(grid.GetEntity(look.pX - 1, look.pY + 1), dmg);
-                                ExplodeAct(grid.GetEntity(look.pX + 1, look.pY + 1), dmg);
-
-                                ExplodeAct(grid.GetEntity(look.pX - 1, look.pY - 1), dmg);
-                                ExplodeAct(grid.GetEntity(look.pX + 1, look.pY - 1), dmg);
-
-                                ExplodeAct(grid.GetEntity(look.pX, look.pY - 1), dmg);
-                                ExplodeAct(grid.GetEntity(look.pX, look.pY + 1), dmg);
-                            }
-                        }
-                        break;
-                    case Action.freeze:
-                        if (e.type == Entity.EType.wizard || e.type == Entity.EType.DarkWizard)
-                        {
-                            e.JumpAnim();
-                            Entity look;
-                            if (forEnemies)
-                            {
-                                look = grid.LookfromEntity(e, LevelGrid.direction.down);
-                            }
-                            else
-                            {
-                                look = grid.LookfromEntity(e, LevelGrid.direction.up);
-                            }
-
-                            if (look != null && (look.isEnemy != forEnemies))
-                            {
-                                look.Freeze((int)Math.Ceiling(e.CalcDamage()));
-                            }
-                        }
-                        break;
-                    case Action.healAll:
-                        if (e.type == Entity.EType.healer)
-                        {
-                            e.JumpAnim();
-                            foreach (Entity en in grid.Entities)
-                            {
-
-                                if (en.isEnemy == e.isEnemy)
+                                Entity look;
+                                if (forEnemies)
                                 {
-                                    if (en.HP < en.MaxHP)
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.down);
+                                }
+                                else
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.up);
+                                }
+
+                                if (look != null && (look.isEnemy != forEnemies))
+                                {
+                                    e.AttackAnim(look);
+                                    Hurt(look, (int)e.CalcDamage());
+                                }
+
+                            }
+                            break;
+
+
+                        case Action.strongAttack:
+                            if (e.type == Entity.EType.warrior)
+                            {
+                                Entity look;
+                                if (forEnemies)
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.down);
+                                }
+                                else
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.up);
+                                }
+
+                                if (look != null && (look.isEnemy != forEnemies))
+                                {
+                                    e.AttackAnim(look);
+                                    Hurt(look, (int)(e.CalcDamage()*1.5));
+                                }
+
+                            }
+                            break;
+
+                        case Action.scatter:
+                            var a = Gameplay.RNG.Next(0, 5);
+                            switch (a)
+                            {
+                                case 1: moveAct(e, Action.up); break;
+                                case 2: moveAct(e, Action.down); break;
+                                case 3: moveAct(e, Action.left); break;
+                                case 4: moveAct(e, Action.right); break;
+                            }
+                            break;
+                        case Action.swap:
+                            {
+                                var en = grid.Entities[Gameplay.RNG.Next(0, grid.Entities.Count)];
+                                while (en.isEnemy != e.isEnemy)
+                                {
+                                    en = grid.Entities[Gameplay.RNG.Next(0, grid.Entities.Count)];
+                                }
+                                var tx = e.pX;
+                                var ty = e.pY;
+
+                                grid.RemoveEntity(e);
+                                grid.RemoveEntity(en);
+
+                                e.pX = en.pX;
+                                e.pY = en.pY;
+
+                                en.pX = tx;
+                                en.pY = ty;
+
+                                grid.SetEntity(e);
+                                grid.SetEntity(en);
+
+                                grid.SetRealEntityCoords(en);
+                                grid.SetRealEntityCoords(e);
+                            }
+                            break;
+                        case Action.up:
+                        case Action.down:
+                        case Action.left:
+                        case Action.right:
+                            moveAct(e, act);
+                            break;
+                        case Action.fireball:
+                            if (e.type == Entity.EType.wizard || e.type == Entity.EType.DarkWizard)
+                            {
+                                e.JumpAnim();
+                                Entity look;
+                                if (forEnemies)
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.down);
+                                }
+                                else
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.up);
+                                }
+
+                                if (look != null && (look.isEnemy != forEnemies))
+                                {
+                                    var dmg = e.CalcDamage();
+
+                                    ExplodeAct(look, e.damage);
+                                    ExplodeAct(grid.GetEntity(look.pX - 1, look.pY), dmg);
+                                    ExplodeAct(grid.GetEntity(look.pX + 1, look.pY), dmg);
+
+                                    ExplodeAct(grid.GetEntity(look.pX - 1, look.pY + 1), dmg);
+                                    ExplodeAct(grid.GetEntity(look.pX + 1, look.pY + 1), dmg);
+
+                                    ExplodeAct(grid.GetEntity(look.pX - 1, look.pY - 1), dmg);
+                                    ExplodeAct(grid.GetEntity(look.pX + 1, look.pY - 1), dmg);
+
+                                    ExplodeAct(grid.GetEntity(look.pX, look.pY - 1), dmg);
+                                    ExplodeAct(grid.GetEntity(look.pX, look.pY + 1), dmg);
+                                }
+                            }
+                            break;
+                        case Action.freeze:
+                            if (e.type == Entity.EType.wizard || e.type == Entity.EType.DarkWizard)
+                            {
+                                e.JumpAnim();
+                                Entity look;
+                                if (forEnemies)
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.down);
+                                }
+                                else
+                                {
+                                    look = grid.LookfromEntity(e, LevelGrid.direction.up);
+                                }
+
+                                if (look != null && (look.isEnemy != forEnemies))
+                                {
+                                    look.Freeze((int)Math.Ceiling(e.CalcDamage()));
+                                }
+                            }
+                            break;
+                        case Action.healAll:
+                            if (e.type == Entity.EType.healer)
+                            {
+                                e.JumpAnim();
+                                foreach (Entity en in grid.Entities)
+                                {
+
+                                    if (en.isEnemy == e.isEnemy)
                                     {
-                                        en.HP += (int)e.CalcDamage();
-                                        en.MarkAnim("Heal");
-                                        en.HP = Math.Min(en.HP, en.MaxHP);
+                                        if (en.HP < en.MaxHP)
+                                        {
+                                            en.HP += (int)e.CalcDamage();
+                                            en.MarkAnim("Heal");
+                                            en.HP = Math.Min(en.HP, en.MaxHP);
+                                        }
+
                                     }
-
                                 }
                             }
-                        }
-                        break;
-                    case Action.heal:
-                        if (e.type == Entity.EType.healer)
-                        {
-                            int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-                            int i = goal;
-                            do
-                            {
-                                Entity en = grid.Entities[i];
-                                if (en.isEnemy == e.isEnemy)
-                                {
-                                    if (en.HP < en.MaxHP)
-                                    {
-                                        e.JumpAnim();
-                                        en.HP += (int)e.CalcDamage() * 3;
-                                        en.MarkAnim("Heal");
-                                        en.HP = Math.Min(en.HP, en.MaxHP);
-                                        break;
-                                    }
-
-                                }
-                                i++;
-                                i %= grid.Entities.Count;
-                            } while (i != goal);
-
-                        }
-                        break;
-
-                    case Action.atack_buff:
-                        if (e.type == Entity.EType.buff_guy)
-                        {
-                            int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-
-                            Entity en = grid.Entities[goal];
-                            while (en.isEnemy != e.isEnemy)
-                            {
-                                goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-                                en = grid.Entities[goal];
-                            }
-
-                            e.JumpAnim();
-                            
-                            en.MarkAnim("StrengthBuff");
-                            en.StrengthBuff = (int)e.CalcDamage();
-                        }
-                        break;
-                    case Action.defence_buff:
-                        if (e.type == Entity.EType.buff_guy)
-                        {
-                            int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-
-                            Entity en = grid.Entities[goal];
-                            while (en.isEnemy)
-                            {
-                                goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-                                en = grid.Entities[goal];
-                            }
-
-                            e.JumpAnim();
-
-                            en.MarkAnim("DefenceBuff");
-                            en.DefenceBuff = (int)e.CalcDamage();
-                        }
-                        break;
-
-                    case Action.breakStone:
-                        if (e.type == Entity.EType.stoner)
-                        {
-                            int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-                            int i = goal;
-                            do
-                            {
-                                Entity en = grid.Entities[i];
-                                if (en.type == Entity.EType.Stone)
-                                {
-                                    e.JumpAnim();
-                                    Hurt(en, 999);
-                                    // en.MarkAnim("Arrow");
-                                    break;
-                                }
-                                i++;
-                                i %= grid.Entities.Count;
-                            } while (i != goal);
-                        }
-                        break;
-                    case Action.addStone:
-                        if (e.type == Entity.EType.stoner)
-                        {
-                            if (Gameplay.RNG.NextDouble() > 0.4)
+                            break;
+                        case Action.heal:
+                            if (e.type == Entity.EType.healer)
                             {
                                 int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
                                 int i = goal;
                                 do
                                 {
                                     Entity en = grid.Entities[i];
-                                    if (en.isEnemy == e.isEnemy && grid.GetEntity(en.pX, en.pY - 1) == null)
+                                    if (en.isEnemy == e.isEnemy)
+                                    {
+                                        if (en.HP < en.MaxHP)
+                                        {
+                                            e.JumpAnim();
+                                            en.HP += (int)e.CalcDamage() * 3;
+                                            en.MarkAnim("Heal");
+                                            en.HP = Math.Min(en.HP, en.MaxHP);
+                                            break;
+                                        }
+
+                                    }
+                                    i++;
+                                    i %= grid.Entities.Count;
+                                } while (i != goal);
+
+                            }
+                            break;
+
+                        case Action.atack_buff:
+                            if (e.type == Entity.EType.buff_guy)
+                            {
+                                int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+
+                                Entity en = grid.Entities[goal];
+                                while (en.isEnemy != e.isEnemy)
+                                {
+                                    goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+                                    en = grid.Entities[goal];
+                                }
+
+                                e.JumpAnim();
+
+                                en.MarkAnim("StrengthBuff");
+                                en.StrengthBuff = (int)e.CalcDamage();
+                            }
+                            break;
+                        case Action.defence_buff:
+                            if (e.type == Entity.EType.buff_guy)
+                            {
+                                int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+
+                                Entity en = grid.Entities[goal];
+                                while (en.isEnemy)
+                                {
+                                    goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+                                    en = grid.Entities[goal];
+                                }
+
+                                e.JumpAnim();
+
+                                en.MarkAnim("DefenceBuff");
+                                en.DefenceBuff = (int)e.CalcDamage();
+                            }
+                            break;
+
+                        case Action.breakStone:
+                            if (e.type == Entity.EType.stoner)
+                            {
+                                int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+                                int i = goal;
+                                do
+                                {
+                                    Entity en = grid.Entities[i];
+                                    if (en.type == Entity.EType.Stone)
                                     {
                                         e.JumpAnim();
-
-                                        Entity.CreateByType(Entity.EType.Stone, grid, en.pX, en.pY - 1);
-
+                                        Hurt(en, 999);
+                                        // en.MarkAnim("Arrow");
                                         break;
                                     }
                                     i++;
                                     i %= grid.Entities.Count;
                                 } while (i != goal);
                             }
-                            else if(grid.Entities.Count< grid.gridW* grid.gridH-2)
+                            break;
+                        case Action.addStone:
+                            if (e.type == Entity.EType.stoner)
                             {
-                                var sx = Gameplay.RNG.Next(0, grid.gridW);
-                                var sy = Gameplay.RNG.Next(0, grid.gridH);
-                                Entity en = grid.GetEntity(sx, sy);
-                                while (en != null)
+                                if (Gameplay.RNG.NextDouble() > 0.4)
                                 {
-                                    sx = Gameplay.RNG.Next(0, grid.gridW);
-                                    sy = Gameplay.RNG.Next(0, grid.gridH);
-                                    en = grid.GetEntity(sx, sy);
-                                }
-                                e.JumpAnim();
-                                Entity.CreateByType(Entity.EType.Stone, grid, sx,sy);
-                            }
-                        }
-                        break;
+                                    int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+                                    int i = goal;
+                                    do
+                                    {
+                                        Entity en = grid.Entities[i];
+                                        if (en != null && en.isEnemy == e.isEnemy && grid.GetEntity(en.pX, en.pY - 1) == null)
+                                        {
+                                            e.JumpAnim();
 
-                    case Action.shoot:
-                        if (e.type == Entity.EType.ranger)
-                        {
-                            int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
-                            int i = goal;
-                            do
-                            {
-                                Entity en = grid.Entities[i];
-                                if (en.isEnemy != e.isEnemy)
+                                            Entity.CreateByType(Entity.EType.Stone, grid, en.pX, en.pY - 1,1);
+
+                                            break;
+                                        }
+                                        i++;
+                                        i %= grid.Entities.Count;
+                                    } while (i != goal);
+                                }
+                                else if (grid.Entities.Count < grid.gridW * grid.gridH - 2)
                                 {
+                                    var sx = Gameplay.RNG.Next(0, grid.gridW);
+                                    var sy = Gameplay.RNG.Next(0, grid.gridH);
+                                    Entity en = grid.GetEntity(sx, sy);
+                                    while (en != null)
+                                    {
+                                        sx = Gameplay.RNG.Next(0, grid.gridW);
+                                        sy = Gameplay.RNG.Next(0, grid.gridH);
+                                        en = grid.GetEntity(sx, sy);
+                                    }
                                     e.JumpAnim();
-                                    Hurt(en, e.CalcDamage());
-                                    en.MarkAnim("Arrow");
-                                    break;
+                                    Entity.CreateByType(Entity.EType.Stone, grid, sx, sy,1);
                                 }
-                                i++;
-                                i %= grid.Entities.Count;
-                            } while (i != goal);
-                        }
-                        break;
-                    case Action.MoveToPlayer:
-                        {
-                            var target = grid.LookfromEntity(e, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.down);
-                                break;
                             }
+                            break;
 
-                            target = grid.LookfromEntity(e.pX + 1, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
+                        case Action.shoot:
+                            if (e.type == Entity.EType.ranger)
                             {
-                                moveAct(e, Action.right);
-                                break;
+                                int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
+                                int i = goal;
+                                do
+                                {
+                                    Entity en = grid.Entities[i];
+                                    if (en!=null && en.isEnemy != e.isEnemy)
+                                    {
+                                        e.JumpAnim();
+                                        Hurt(en, e.CalcDamage());
+                                        en.MarkAnim("Arrow");
+                                        break;
+                                    }
+                                    i++;
+                                    i %= grid.Entities.Count;
+                                } while (i != goal);
                             }
-
-                            target = grid.LookfromEntity(e.pX - 1, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
+                            break;
+                        case Action.MoveToPlayer:
                             {
-                                moveAct(e, Action.left);
-                                break;
-                            }
+                                var target = grid.LookfromEntity(e, LevelGrid.direction.down);
+                                if (target != null && !target.isEnemy)
+                                {
+                                    moveAct(e, Action.down);
+                                }
+                                if (target == null || target.isEnemy)
+                                {
+                                    for (int i = 0; i < 10; i++)
+                                    {
+                                        target = grid.LookfromEntity(e.pX - i, e.pY, LevelGrid.direction.down);
+                                        if (target != null && !target.isEnemy)
+                                        {
+                                            moveAct(e, Action.left);
+                                            break;
+                                        }
 
-                            target = grid.LookfromEntity(e.pX + 2, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.right);
-                                break;
+                                        target = grid.LookfromEntity(e.pX + i, e.pY, LevelGrid.direction.down);
+                                        if (target != null && !target.isEnemy)
+                                        {
+                                            moveAct(e, Action.right);
+                                            break;
+                                        }
+                                    }
+                                }
                             }
+                            break;
 
-                            target = grid.LookfromEntity(e.pX - 2, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.left);
-                                break;
-                            }
-
-                            target = grid.LookfromEntity(e.pX + 3, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.right);
-                                break;
-                            }
-
-                            target = grid.LookfromEntity(e.pX - 3, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.left);
-                                break;
-                            }
-
-                            target = grid.LookfromEntity(e.pX + 4, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.right);
-                                break;
-                            }
-
-                            target = grid.LookfromEntity(e.pX - 4, e.pY, LevelGrid.direction.down);
-                            if (target != null && !target.isEnemy)
-                            {
-                                moveAct(e, Action.left);
-                                break;
-                            }
-                        }
-                        break;
-
+                    }
                 }
-
             }
         }
 
         public void PerformActionAll(Action act, bool forEnemies = false, bool isGolden = false)
         {
+
+            
+
             switch (act)
             {
                 case Action.down:
@@ -531,21 +582,22 @@ namespace OutOfControl
                         break;
                     }
 
-                case Action.attack:
-                case Action.fireball:
-                case Action.freeze:
-                case Action.heal:
-                case Action.healAll:
-                case Action.guard:
-                case Action.shoot:
-                case Action.defence_buff:
-                case Action.atack_buff:
-                case Action.addStone:
-                case Action.breakStone:
-                case Action.scatter:
-                case Action.random:
-                case Action.swap:
-
+                /* case Action.attack:
+                 case Action.fireball:
+                 case Action.freeze:
+                 case Action.heal:
+                 case Action.healAll:
+                 case Action.guard:
+                 case Action.shoot:
+                 case Action.defence_buff:
+                 case Action.atack_buff:
+                 case Action.addStone:
+                 case Action.breakStone:
+                 case Action.scatter:
+                 case Action.random:
+                 case Action.swap:
+                 case Action.strongAttack:*/
+                default:
 
                     for (int i = 0; i < grid.Entities.Count; i++)
                     {

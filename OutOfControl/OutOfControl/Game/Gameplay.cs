@@ -13,17 +13,59 @@ namespace OutOfControl
     {
         static double global_Luck = 1;
         static double global_Despair = 1;
+        static int gridW = 10;
+        static int level = 28;
+        static int DiceCount = 3;
+
+        struct SaveWarrior
+        {
+            public int level;
+            public Entity.EType type;
+        }
+        List<SaveWarrior> Warriors = new List<SaveWarrior>();
+
         public static Random RNG;
 
         public Gameplay()
         {
             RNG = new Random();
- 
-
 
             GameObject bg = new GameObject();
-            bg.SetImg(GlobalContent.LoadImg("bg",true));
-            bg.AddUR(this);
+            bg.SetImg(GlobalContent.LoadImg("bg", true)).Scale(5).
+            AddUR(this);
+
+
+
+
+
+            GameObject fg1 = new GameObject();
+            fg1.SetImg(GlobalContent.LoadImg("fg1", true)).
+                Scale(5).
+                AddUR(this);
+            GameObject fg2 = new GameObject();
+            fg2.SetImg(GlobalContent.LoadImg("fg2", true)).
+            Scale(5).
+            AddUR(this);
+
+            ActionManager = new ActionManager();
+            // ActionManager.AddCharToPool(Entity.EType.warrior);
+            //  ActionManager.AddCharToPool(Entity.EType.healer);
+            ActionManager.AddCharToPool(Entity.EType.ranger);
+            // ActionManager.AddCharToPool(Entity.EType.wizard);
+            //// ActionManager.AddCharToPool(Entity.EType.buff_guy);
+            // ActionManager.AddCharToPool(Entity.EType.stoner);
+
+
+
+            for (int i = 0; i <= 10; i++)
+            {
+                var a = new SaveWarrior();
+                a.type = Entity.EType.ranger;
+                a.level = 3;
+                Warriors.Add(a);
+            }
+
+
 
             StartFight();
         }
@@ -31,54 +73,124 @@ namespace OutOfControl
         public LevelGrid Grid;
         public ActionManager ActionManager;
 
-        public void StartFight() {
+        public void StartFight()
+        {
+            //=ОКРВВЕРХ.МАТ( КОРЕНЬ(A2*7))
 
             InitGrid();
             SpawnEnemies();
             SpawnPlayers();
-
-            foreach (Entity e in Grid.Entities)
-            {
-                Console.WriteLine(Grid.LookfromEntity(e, LevelGrid.direction.up));
-            }
-
         }
 
         public void InitGrid()
         {
-            Grid = new LevelGrid(6,6);
+            gridW = (int)Math.Ceiling(Math.Sqrt(level * 7));
+            Grid = new LevelGrid(gridW, (int)(gridW * (5.0 / 6.0)));
             Grid.AddUR(this);
             Grid.BaseRenderParameters.X = 1280 / 2;
             Grid.BaseRenderParameters.Y = 720 / 2;
-            Grid.BaseRenderParameters.ScaleW = 3;
-            Grid.BaseRenderParameters.ScaleH = 3;
+            Grid.BaseRenderParameters.ScaleW = 1 * (20.0 / gridW);
+            Grid.BaseRenderParameters.ScaleH = Grid.BaseRenderParameters.ScaleW;
 
-            ActionManager = new ActionManager();
+
             ActionManager.grid = Grid;
         }
         public void SpawnEnemies()
         {
-            Entity.CreateByType(Entity.EType.Skeleton, Grid, 0, 0);
-            Entity.CreateByType(Entity.EType.DarkKnight, Grid, 1, 0);
-            Entity.CreateByType(Entity.EType.DarkWizard, Grid, 2, 0);
-            Entity.CreateByType(Entity.EType.Witch, Grid, 3, 1);
-            Entity.CreateByType(Entity.EType.Stone, Grid, 3, 2);
+            //=ОКРВВЕРХ.МАТ( КОРЕНЬ(A2*4))
+            var enemyCount = (int)Math.Ceiling(Math.Sqrt(level * 4));
+            var a = 0;
+
+            while (a < enemyCount)
+            {
+                var p = Grid.FindEmptySpace(true);
+                if (a < enemyCount && RNG.NextDouble() < 0.25)
+                {
+                    Entity.CreateByType(Entity.EType.Skeleton, Grid, p.X, p.Y, (int)(level / 10));
+                    a++;
+                }
+                p = Grid.FindEmptySpace(true);
+                if (a < enemyCount && RNG.NextDouble() < 0.2)
+                {
+                    Entity.CreateByType(Entity.EType.DarkKnight, Grid, p.X, p.Y, (int)(level / 10));
+                    a++;
+                }
+                p = Grid.FindEmptySpace(true);
+                if (a < enemyCount && RNG.NextDouble() < 0.15)
+                {
+                    Entity.CreateByType(Entity.EType.DarkWizard, Grid, p.X, p.Y, (int)(level / 10));
+                    a++;
+                }
+                p = Grid.FindEmptySpace(true);
+                if (a < enemyCount && RNG.NextDouble() < 0.1)
+                {
+                    Entity.CreateByType(Entity.EType.Witch, Grid, p.X, p.Y, (int)(level / 10));
+                    a++;
+                }
+
+            }
 
         }
         public void SpawnPlayers()
         {
-            Entity.CreateByType(Entity.EType.warrior, Grid, 0, 5);
-            Entity.CreateByType(Entity.EType.healer, Grid, 1, 5);
-            Entity.CreateByType(Entity.EType.ranger, Grid, 2, 5);
-            Entity.CreateByType(Entity.EType.stoner, Grid, 3, 5);
-            Entity.CreateByType(Entity.EType.wizard, Grid, 4, 4);
-            Entity.CreateByType(Entity.EType.buff_guy, Grid, 0, 4);
-     
+            /* Entity.CreateByType(Entity.EType.warrior, Grid, 0, 5);
+             Entity.CreateByType(Entity.EType.healer, Grid, 1, 5);
+             Entity.CreateByType(Entity.EType.ranger, Grid, 2, 5);
+             Entity.CreateByType(Entity.EType.stoner, Grid, 3, 5);
+             Entity.CreateByType(Entity.EType.wizard, Grid, 4, 4);
+             Entity.CreateByType(Entity.EType.buff_guy, Grid, 0, 4);*/
+
+            foreach (var w in Warriors)
+            {
+                var p = Grid.FindEmptySpace(false);
+                var a = Entity.CreateByType(w.type, Grid, p.X, p.Y, w.level);
+                Console.WriteLine(a);
+            }
+
+
+
+
+
         }
 
-      
+
+
+        public void ThrowDice(int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                Dice d = new Dice();
+                d.
+                    SetXY(1280 / 2, 920).
+                    Scale(1.5).
+                    AddUR(this);
+
+                d.GoalX = 280 + (1000.0 / n) * i;
+                d.GoalY = (720.0 / 2.0);
+                d.GoalX += RNG.Next(-100, 100);
+                d.GoalY += RNG.Next(-200, 200);
+
+                d.init(ActionManager.RandomAction(), false);
+
+            }
+
+
+        }
+
+        int BattleTimer = 0;
+        BattleStates BattleState = BattleStates.waitForThrow;
+        Dice bufferDice;
+        enum BattleStates
+        {
+            waitForThrow,
+            SelectAction,
+            WaitAfterSelect,
+            EnemyTurn,
+        }
+
         public override void Update()
         {
+            {/*
             // Console.WriteLine(123);
             if (KEY.IsTyped(Keys.Q))
             {
@@ -132,6 +244,11 @@ namespace OutOfControl
                 ActionManager.PerformActionAll(ActionManager.Action.swap, false);
             }
 
+            if (KEY.IsTyped(Keys.Z))
+            {
+                ActionManager.PerformActionAll(ActionManager.Action.strongAttack, false);
+            }
+
             if (KEY.IsTyped(Keys.Up))
             {
                 ActionManager.PerformActionAll(ActionManager.Action.up, false);
@@ -154,7 +271,66 @@ namespace OutOfControl
             {
                 ActionManager.EnemyTurn();
             }
-            
+
+            if (KEY.IsTyped(Keys.D))
+            {
+                ThrowDice(3);
+            }
+            */
+            }
+
+
+            switch (BattleState)
+            {
+                case BattleStates.waitForThrow:
+                    if (KEY.LClick)
+                    {
+                        ThrowDice(DiceCount);
+                        BattleState = BattleStates.SelectAction;
+                    }
+                    break;
+                case BattleStates.SelectAction:
+                    foreach (var d in Dice.All)
+                    {
+
+                        if (d.GetAbsoluteRect().Contains((int)KEY.MouseX, (int)KEY.MouseY) && KEY.LClick)
+                        {
+                            bufferDice = d;
+                          //  ActionManager.PerformActionAll(d.Action, false, d.isGolden);
+                            foreach (var dd in Dice.All)
+                            {
+                                dd.clearDice();
+                            }
+                            BattleState = BattleStates.WaitAfterSelect;
+                            BattleTimer = 60;
+                        }
+
+
+                        if (KEY.IsTyped(Keys.Space))
+                        {
+                            d.GoalX += 400;
+                            d.GoalY += RNG.Next(-300, 300);
+                        }
+                    }
+                    break;
+                case BattleStates.WaitAfterSelect:
+                    BattleTimer--;
+                    if (BattleTimer==30)
+                    {
+                        ActionManager.PerformActionAll(bufferDice.Action, false, bufferDice.isGolden);
+                    }
+                    if (BattleTimer<=0)
+                    {
+                        ActionManager.EnemyTurn();
+                        BattleState = BattleStates.waitForThrow;
+                    }
+
+                    break;
+            }
+
+          
+
+
         }
     }
 }

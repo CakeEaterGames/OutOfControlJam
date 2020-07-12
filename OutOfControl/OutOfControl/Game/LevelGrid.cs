@@ -69,6 +69,27 @@ namespace OutOfControl
             DrawGrid();
         }
 
+        public Point FindEmptySpace(bool forEnemy)
+        {
+            Point p = new Point(0, 0);
+            Entity e;
+            do
+            {
+                p.X = Gameplay.RNG.Next(0, gridW);
+                if (forEnemy)
+                {
+                    p.Y = Gameplay.RNG.Next(0, gridH / 2);
+                }
+                else
+                {
+                    p.Y = Gameplay.RNG.Next(gridH / 2, gridH);
+                }
+                e = GetEntity(p.X, p.Y);
+            } while (e != null);
+
+            return p;
+        }
+
         public void SetEntity(Entity e)
         {
             if (isInGrid(e.pX, e.pY) && EntitiesGrid[e.pX][e.pY] == null)

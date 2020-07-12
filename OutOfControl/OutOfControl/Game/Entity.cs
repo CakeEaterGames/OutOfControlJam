@@ -208,7 +208,7 @@ namespace OutOfControl
         }
 
 
-        public static Entity CreateByType(EType t,LevelGrid Grid,int x, int y)
+        public static Entity CreateByType(EType t,LevelGrid Grid,int x, int y, int level)
         {
             Entity p = new Entity();
 
@@ -318,6 +318,9 @@ namespace OutOfControl
 
             }
 
+            p.level = level;
+
+            p.MaxHP = (int)(p.MaxHP * p.LevelMultiplier());
             p.HP = p.MaxHP;
 
             if (p.MoveSet.Count>0)
@@ -326,9 +329,6 @@ namespace OutOfControl
                 p.currentCycle = rng.Next(0, 999) % p.MoveSet.Count;
             }
            
-
-
-
             p.AddUR(Grid);
 
             p.pX = x;
