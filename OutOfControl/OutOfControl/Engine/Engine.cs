@@ -8,7 +8,7 @@ using MonoCake.Objects;
 using System;
 using System.Collections.Generic;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class Engine : CakeEngine
     {

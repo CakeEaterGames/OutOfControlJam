@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     class Gameplay : Scene
     {
@@ -16,7 +16,7 @@ namespace OutOfControl
         public static double CurseCount = 0;
 
         public static int level = 1;
-        public static int DiceCount = 3;
+        public static int DiceCount = 4;
 
 
         public struct SaveWarrior
@@ -36,6 +36,7 @@ namespace OutOfControl
 
         public Gameplay()
         {
+            AudioManager.PlaySong("in", 1, false);
             self = this;
             RNG = new Random();
             ActionManager = new ActionManager();
@@ -61,20 +62,22 @@ namespace OutOfControl
             }
 
 
-          
-          
+
+
 
 
             //Combat();
 
-            //AfterCombat();
+            // AfterCombat();
 
             //Death();
 
-            MainMenu();
+            // MainMenu();
+            PreMainMenu();
 
-           // chat.addText("hello world");
-         //   chat.AddUR(this);
+            // chat.addText("hello world");
+            //   chat.AddUR(this);
+            chat.AddUpdate(this);
             
         }
 
@@ -92,7 +95,7 @@ namespace OutOfControl
 
             CurrentScene = comb;
             chat.RemoveRender();
-            chat.AddRender(this);
+            chat.AddUR(this);
         }
         public void AfterCombat()
         {
@@ -111,6 +114,7 @@ namespace OutOfControl
                 CurrentScene.Destruct();
 
             CurrentScene = new GameOverScreen();
+            CurrentScene.AddUR(this);
 
             chat.RemoveRender();
             chat.AddRender(this);
@@ -128,20 +132,49 @@ namespace OutOfControl
             chat.AddRender(this);
 
         }
+        public void PreMainMenu()
+        {
+            if (CurrentScene != null)
+                CurrentScene.Destruct();
+
+            CurrentScene = new PreMainMenu();
+            CurrentScene.AddUR(this);
+
+            chat.RemoveRender();
+            chat.AddRender(this);
+
+        }
 
         public override void Update()
         {
-         /*   if (KEY.IsTyped(Keys.T))
+          //  Console.WriteLine(AudioManager.currentLength);
+
+           // Console.WriteLine(AudioManager.currentTime);
+
+          //  Console.WriteLine(AudioManager.currentLength - AudioManager.currentTime);
+            if (AudioManager.currentSong=="in")
             {
-                chat.AddLine();
-                chat.AddLotsOfText("Hello this is a very long text just to test if everything works yay lel test test test test test test test test");
-            }*/
-         
+                if (AudioManager.currentLength / 2 - AudioManager.currentTime<=0)
+                {
+                    AudioManager.PlaySong("bass",1);
+                }
+            
+            }
+            else
+            if (AudioManager.currentSong == "bass")
+            {
+                if (AudioManager.currentLength/2 - AudioManager.currentTime  <= 0)
+                {
+                    AudioManager.PlaySong("loop", 1,true);
+                }
+
+            }
+
         }
 
         public static void GiveCurse()
         {
-            CurseCount++;
+            ActionManager.AddCurse();
         }
     }
 }

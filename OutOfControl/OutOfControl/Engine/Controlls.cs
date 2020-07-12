@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoCake;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public static class Controls
     {

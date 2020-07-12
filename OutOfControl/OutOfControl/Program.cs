@@ -1,7 +1,7 @@
 ﻿using System;
 using MonoCake;
 
-namespace OutOfControl
+namespace Pellicalo
 {
 #if WINDOWS || LINUX
     /// <summary>

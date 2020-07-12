@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class MainMenu : Scene
     {
@@ -20,6 +20,9 @@ namespace OutOfControl
 
         public MainMenu()
         {
+            // AudioManager.PlaySong("loop", 1, true);
+          
+            AudioManager.SinglePlay("hehey");
             bg.
                 SetImg(GlobalContent.LoadImg("MenuGrass", true)).
                 Scale(1).

@@ -13,6 +13,8 @@ namespace MonoCake.Objects
 {
     public class TextField : GameObject
     {
+        public int lifeTime = 0;
+
         public static SpriteFont defaultFont;
 
         public SpriteFont font = defaultFont;

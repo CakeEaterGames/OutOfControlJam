@@ -4,7 +4,7 @@ using MonoCake.Objects;
 using System;
 using System.Collections.Generic;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class Entity : GameObject
     {
@@ -332,6 +332,9 @@ namespace OutOfControl
                     p.MoveSet.Add(ActionManager.Action.scatter);
                     p.MoveSet.Add(ActionManager.Action.scatter);
                     p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
                     p.MoveSet.Add(ActionManager.Action.Curse);
                     break;
                 case EType.DarkArcher:
@@ -391,11 +394,11 @@ namespace OutOfControl
         public void FullDescription()
         {
             Gameplay.chat.AddLine();
-            Gameplay.chat.AddLotsOfText("HP: " + HP + " / " + MaxHP);
+            Gameplay.chat.AddLotsOfText("HP: " + (int)HP + " / " + (int)MaxHP);
             Gameplay.chat.AddLotsOfText("Level: " + level);
             Gameplay.chat.AddLotsOfText("Is evil: " + isEnemy);
             Gameplay.chat.AddLotsOfText("Can attack: " + CanAttack);
-            Gameplay.chat.AddLotsOfText("Damage: " + PreCalcDamage());
+            Gameplay.chat.AddLotsOfText("Damage: " + (int)PreCalcDamage());
             if (FreezeAmount > 0)
             {
                 Gameplay.chat.AddLotsOfText("Frozen for " + FreezeAmount + " turns");

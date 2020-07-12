@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class GameOverScreen : Scene
     {
@@ -16,7 +16,11 @@ namespace OutOfControl
         TextField info = new TextField();
         public GameOverScreen()
         {
-           
+            AudioManager.StopAllSounds();
+            AudioManager.StopSong();
+
+            AudioManager.PlaySong("gameover",1,true);
+
             bg.SetImg(GlobalContent.LoadImg("GameOver",true));
             bg.Scale(5);
             bg.AddUR(this);

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class ChatBox : BasicObject
     {
@@ -19,6 +19,17 @@ namespace OutOfControl
             BaseRenderParameters.ScaleW = 0.5;
             BaseRenderParameters.ScaleH = 0.5;
         }
+
+        public override void Update()
+        {
+            foreach (TextField t in texts)
+            {
+                t.Alpha -= 1.0/(60.0*10.0);
+                //t.Alpha -= 0.1;
+				
+            }
+        }
+
         public List<TextField> texts = new List<TextField>();
 		public void addText(string txt)
         {

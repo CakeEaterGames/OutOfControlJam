@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoCake;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class ActionManager
     {
@@ -59,7 +60,7 @@ namespace OutOfControl
         }
 
 
-        List<Action> ActionPool = new List<Action>();
+        public List<Action> ActionPool = new List<Action>();
 
         public void AddCharToPool(Entity.EType t)
         {
@@ -102,6 +103,7 @@ namespace OutOfControl
         public void AddCurse()
         {
             ActionPool.Add(Action.cursed);
+            Gameplay.CurseCount++;
         }
 
 
@@ -240,6 +242,9 @@ namespace OutOfControl
                                 if (look != null && (look.isEnemy != forEnemies))
                                 {
                                     e.AttackAnim(look);
+                                    //AudioManager.SinglePlay("");
+                                    AudioManager.SinglePlay("hit");
+
                                     Hurt(look, (int)e.CalcDamage());
                                 }
 
@@ -263,6 +268,8 @@ namespace OutOfControl
                                 if (look != null && (look.isEnemy != forEnemies))
                                 {
                                     e.AttackAnim(look);
+                                    AudioManager.SinglePlay("hit");
+
                                     Hurt(look, (int)(e.CalcDamage()*1.5));
                                 }
 
@@ -329,6 +336,8 @@ namespace OutOfControl
                                 if (look != null && (look.isEnemy != forEnemies))
                                 {
                                     var dmg = e.CalcDamage();
+                                    AudioManager.SinglePlay("explosion2");
+                                    AudioManager.SinglePlay("fireball");
 
                                     ExplodeAct(look, e.damage);
                                     ExplodeAct(grid.GetEntity(look.pX - 1, look.pY), dmg);
@@ -378,6 +387,8 @@ namespace OutOfControl
                                         {
                                             en.HP += (int)e.CalcDamage();
                                             en.MarkAnim("Heal");
+                                            AudioManager.SinglePlay("heal");
+
                                             en.HP = Math.Min(en.HP, en.MaxHP);
                                         }
 
@@ -400,6 +411,7 @@ namespace OutOfControl
                                             e.JumpAnim();
                                             en.HP += (int)e.CalcDamage() * 3;
                                             en.MarkAnim("Heal");
+                                            AudioManager.SinglePlay("heal");
                                             en.HP = Math.Min(en.HP, en.MaxHP);
                                             break;
                                         }
@@ -428,6 +440,7 @@ namespace OutOfControl
 
                                 en.MarkAnim("StrengthBuff");
                                 en.StrengthBuff = (int)e.CalcDamage();
+                                AudioManager.SinglePlay("buff");
                             }
                             break;
                         case Action.defence_buff:
@@ -446,6 +459,7 @@ namespace OutOfControl
 
                                 en.MarkAnim("DefenceBuff");
                                 en.DefenceBuff = (int)e.CalcDamage();
+                                AudioManager.SinglePlay("buff");
                             }
                             break;
 
@@ -462,6 +476,7 @@ namespace OutOfControl
                                         e.JumpAnim();
                                         Hurt(en, 999);
                                         // en.MarkAnim("Arrow");
+                                        AudioManager.SinglePlay("hit");
                                         break;
                                     }
                                     i++;
@@ -521,6 +536,7 @@ namespace OutOfControl
                                         e.JumpAnim();
                                         Hurt(en, e.CalcDamage());
                                         en.MarkAnim("Arrow");
+                                        AudioManager.SinglePlay("shoot");
                                         break;
                                     }
                                     i++;
@@ -556,7 +572,23 @@ namespace OutOfControl
                                 }
                             }
                             break;
-
+                        case Action.Curse:
+                            if (e.type==Entity.EType.Witch)
+                            {
+                                AudioManager.SinglePlay("fireball");
+                                foreach (var en in grid.Entities)
+                                {
+                                    if (en.isEnemy != e.isEnemy)
+                                    {
+                                        en.MarkAnim("Curse");
+                                    }
+                                }
+                                AddCurse();
+                            }
+                            break;
+                        case Action.cursed:
+                            Hurt(e, 5);
+                            break;
                     }
                 }
             }

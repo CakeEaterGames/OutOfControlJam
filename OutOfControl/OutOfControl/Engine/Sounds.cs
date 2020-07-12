@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public static class Sounds
     {
@@ -13,40 +13,27 @@ namespace OutOfControl
         {
             Console.WriteLine("Loading Sounds");
 
-            /*  AudioManager.LoadPath = "Audio\\";
+            AudioManager.LoadPath = "Audio\\";
 
+            AudioManager.LoadSong("pellicalo-full", "pellicalo-full.wav", 1);
+            AudioManager.LoadSound("buff", "buff.wav", 1);
+            AudioManager.LoadSound("click", "click.wav", 1);
+            AudioManager.LoadSound("click2", "click2.wav", 1);
+            AudioManager.LoadSound("dice", "dice.wav", 1);
+            AudioManager.LoadSound("explosion", "explosion.wav", 1);
+            AudioManager.LoadSound("explosion2", "explosion2.wav", 1);
+            AudioManager.LoadSound("fireball", "fireball.wav", 1);
+            AudioManager.LoadSound("heal", "heal.wav", 1);
+            AudioManager.LoadSound("hehey", "hehey.wav", 1);
+            AudioManager.LoadSound("hit", "hit.wav", 1);
+            AudioManager.LoadSong("gameover", "pellicalo-gameover.wav", 1);
+           
+            AudioManager.LoadSound("shoot", "shoot.wav", 1);
 
-              AudioManager.LoadSong("bgm1", "placeholders/Antichamber - The Final Puzzle.mp3", 0.5);
-              AudioManager.LoadSong("bgm2", "placeholders/Hyper Light Drifter - The Gauntlet.mp3", 0.5);
-              AudioManager.LoadSong("bgm3", "placeholders/Hyper Light Drifter - The Midnight Wood.mp3", 0.5);
-              AudioManager.LoadSong("bgm4", "placeholders/The Talos Principle - Trials.mp3", 0.5);
-              AudioManager.LoadSong("bgm5", "placeholders/Hyper Light Drifter - Titan.mp3", 0.5);
-              AudioManager.LoadSong("bgm6", "placeholders/Portal 2 - I Made It All Up.mp3", 0.5);
-              AudioManager.LoadSong("credits1", "music/Shrkhv - Broken Machine.mp3", 0.5);
-              AudioManager.LoadSong("menu", "placeholders/Portal 2 - Overgrowth.mp3", 0.5);
-              AudioManager.LoadSong("firstLogin", "placeholders/Hyper Light Drifter - The Resonant Canyon.mp3", 0.6);
+            AudioManager.LoadSong("bass", "bass.wav", 0.8);
+            AudioManager.LoadSong("in", "in.wav", 0.8);
+            AudioManager.LoadSong("loop", "main-loop.wav", 0.8);
 
-              AudioManager.LoadSound("menu hover", "sounds/Menu Hover.wav", 0.2);
-              AudioManager.LoadSound("menu click", "sounds/Menu Click.wav", 0.5);
-              AudioManager.LoadSound("noise", "sounds/noise.wav", 10);
-              AudioManager.LoadSound("screen transition", "sounds/screen transition.mp3", 10);
-              AudioManager.LoadSound("step1", "sounds/step1.mp3", 2);
-              AudioManager.LoadSound("step2", "sounds/step2.mp3", 2);
-              AudioManager.LoadSound("land", "sounds/land.wav", 2);
-              AudioManager.LoadSound("btn", "sounds/btn press.wav", 2);
-              AudioManager.LoadSound("succsess", "sounds/succsess.wav", 1);
-
-              AudioManager.LoadSound("shine", "sounds/shine2.wav", 3);
-
-
-
-              AudioManager.bgm.Add("bgm1");
-              AudioManager.bgm.Add("bgm2");
-              AudioManager.bgm.Add("bgm3");
-              AudioManager.bgm.Add("bgm4");
-              AudioManager.bgm.Add("bgm5");
-              AudioManager.bgm.Add("bgm6");
-   */
             Console.WriteLine("Loading Sounds Done");
         }
     }

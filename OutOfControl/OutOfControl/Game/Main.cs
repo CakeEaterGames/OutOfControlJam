@@ -1,7 +1,7 @@
 ﻿using System;
 using MonoCake;
 using MonoCake.Objects;
-namespace OutOfControl
+namespace Pellicalo
 {
     public class Main : BasicObject
     {

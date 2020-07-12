@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     class Dice : GameObject
     {
@@ -20,7 +20,7 @@ namespace OutOfControl
 
         public Dice()
         {
-
+            AudioManager.SinglePlay("dice");
             All.Add(this);
             initActionImages();
         }

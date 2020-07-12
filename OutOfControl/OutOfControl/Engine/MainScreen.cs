@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using MonoCake.Other;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class MainScreen : Layer
     {

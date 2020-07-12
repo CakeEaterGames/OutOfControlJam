@@ -7,10 +7,10 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95FF960C-B83C-4128-BB16-983EFDCA835B}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OutOfControl</RootNamespace>
-    <AssemblyName>OutOfControl</AssemblyName>
+    <RootNamespace>Pellicalo</RootNamespace>
+    <AssemblyName>Pellicalo</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -95,6 +95,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Audio\bass.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\buff.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\click.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\click2.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\dice.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\exolosion2.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\explosion.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\fireball.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\heal.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\hehey.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\hit.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\in.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\main-loop.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\pellicalo-full.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\pellicalo-gameover.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\shoot.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Effects\negative.fx" />
     <Content Include="Content\Images\cake.png" />
     <Content Include="Content\Images\x16.png" />
@@ -103,6 +151,16 @@
     <Content Include="Content\Images\x64.png" />
     <Content Include="Content\Images\x8.png" />
     <Content Include="Icon.ico" />
+    <EmbeddedResource Include="Resources\Images\UI\text1.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text2.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text3.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text4.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text5.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text6.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text7.png" />
+    <EmbeddedResource Include="Resources\Images\UI\text8.png" />
+    <EmbeddedResource Include="Resources\Images\UI\hand.png" />
+    <EmbeddedResource Include="Resources\Images\UI\btn2.png" />
     <EmbeddedResource Include="Resources\Images\UI\Menu\ExitBttn.png" />
     <EmbeddedResource Include="Resources\Images\UI\Menu\MenuDudes.png" />
     <EmbeddedResource Include="Resources\Images\UI\Menu\MenuGrass.png" />
@@ -190,6 +248,7 @@
       <Name>MonoCake</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

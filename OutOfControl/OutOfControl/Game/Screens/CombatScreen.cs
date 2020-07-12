@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     public class CombatScreen : Scene
     {
@@ -32,10 +32,23 @@ namespace OutOfControl
             Scale(5).
             AddUR(this);
 
+            Gameplay.chat.AddLotsOfText("You can press space to sumon a giant hand ;) It will move dice for you");
 
+           
 
+                hand = new GameObject();
+                hand.SetImg(GlobalContent.LoadImg("hand", true)).
+                    Scale(1.5).
+                    SetCenter(2).
+                    SetXY(100000, 720 + 100).
+
+                    AddUR(this);
+            hand.Orientation = Microsoft.Xna.Framework.Graphics.SpriteEffects.FlipHorizontally;
+
+            //hand.Rotation = -Math.PI / 3;
         }
 
+        public GameObject hand;
         public LevelGrid Grid;
         public ActionManager ActionManager;
 
@@ -264,6 +277,21 @@ namespace OutOfControl
             */
             }
 
+            if (hand!=null)
+            {
+                hand.X += 1280 / 10;
+                hand.Rotation += Math.PI / 240;
+            }
+            foreach (Entity e in Grid.Entities)
+            {
+                if (e != null && e.GetAbsoluteRect().Contains((int)KEY.MouseX, (int)KEY.MouseY))
+                {
+                    if (KEY.RClick)
+                    {
+                        e.FullDescription();
+                    }
+                }
+            }
 
             switch (BattleState)
             {
@@ -282,6 +310,7 @@ namespace OutOfControl
                         {
                             if (KEY.LClick)
                             {
+                                AudioManager.SinglePlay("click2");
                                 if (d.IsPlaying)
                                 {
                                     d.QickStopRot();
@@ -308,6 +337,8 @@ namespace OutOfControl
 
                         if (KEY.IsTyped(Keys.Space))
                         {
+                            hand.X = -50;
+                            hand.Rotation = 0;
                             d.GoalX += 400;
                             d.GoalY += RNG.Next(-300, 300);
                         }

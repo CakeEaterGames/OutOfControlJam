@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfControl
+namespace Pellicalo
 {
     class Button : GameObject
     {
@@ -15,9 +15,9 @@ namespace OutOfControl
         public TextField textField = new TextField("Sample Text", new Color(216, 106, 69));
         public Button()
         {
-            AddImg(GlobalContent.LoadImg("btn",true),"");
-            AddFrame("", 1, new Rectangle(0, 0, 72, 23));
-            AddFrame("", 1, new Rectangle(72, 0, 72, 23));
+            AddImg(GlobalContent.LoadImg("btn2",true),"");
+            AddFrame("", 1, new Rectangle(432, 0, 215, 23));
+            AddFrame("", 1, new Rectangle(649, 0, 215, 23));
             GotoAndStop(0);
 
             SetCenter(5);

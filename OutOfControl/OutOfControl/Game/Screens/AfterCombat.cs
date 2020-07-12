@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace OutOfControl
+namespace Pellicalo
 {
     class AfterCombatScreen : Scene
     {
@@ -59,6 +59,11 @@ namespace OutOfControl
                 b.updateText();
                 buttons.Add(b);
             }
+            if (Gameplay.RNG.NextDouble() < 0.8)
+            {
+                var b = new PureBtn();
+                buttons.Add(b);
+            }
             var bb = new SkipBtn();
             buttons.Add(bb);
             for (int i = 0; i < buttons.Count; i++)
@@ -98,6 +103,7 @@ namespace OutOfControl
         }
         public override void Click()
         {
+            AudioManager.SinglePlay("click2");
             var w = new Gameplay.SaveWarrior();
             w.level = 1;
             w.type = type;
@@ -130,6 +136,7 @@ namespace OutOfControl
         }
         public override void Click()
         {
+            AudioManager.SinglePlay("click2");
             entity.level++;
             if (isCursed)
             {
@@ -157,6 +164,7 @@ namespace OutOfControl
         }
         public override void Click()
         {
+            AudioManager.SinglePlay("click2");
             Gameplay.DiceCount += amount;
             ((AfterCombatScreen)ParentClass).Leave();
             if (isCursed)
@@ -175,7 +183,31 @@ namespace OutOfControl
         }
         public override void Click()
         {
+            AudioManager.SinglePlay("click2");
+            ((AfterCombatScreen)ParentClass).Leave();
+        }
+    }
 
+    class PureBtn : Button
+    {
+        public PureBtn()
+        {
+            textField.text = "Remove 2 curses";
+
+        }
+        
+        public override void Click()
+        {
+            if (Gameplay.ActionManager.ActionPool.Contains(ActionManager.Action.cursed))
+            {
+                Gameplay.ActionManager.ActionPool.Remove(ActionManager.Action.cursed);
+            }
+            if (Gameplay.ActionManager.ActionPool.Contains(ActionManager.Action.cursed))
+            {
+                Gameplay.ActionManager.ActionPool.Remove(ActionManager.Action.cursed);
+            }
+
+            AudioManager.SinglePlay("click2");
             ((AfterCombatScreen)ParentClass).Leave();
         }
     }
