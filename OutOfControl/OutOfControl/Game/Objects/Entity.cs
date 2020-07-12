@@ -159,7 +159,7 @@ namespace OutOfControl
             }
             else if (DefenceBuff > 0)
             {
-                color = Color.Cyan;
+                color = Color.Gray;
             }
             else
             {
@@ -183,7 +183,8 @@ namespace OutOfControl
             Skeleton,
             Witch,
             DarkWizard,
-            DarkKnight
+            DarkKnight,
+            DarkArcher
         };
 
         public static List<EType> HireList;
@@ -240,35 +241,35 @@ namespace OutOfControl
                     p.SetImg(GlobalContent.LoadImg("Warrior", true));
                     p.CanAttack = true;
                     p.damage = 3;
-                    p.MaxHP = 10;
+                    p.MaxHP = 15;
                     break;
                 case EType.wizard: 
                     p.SetImg(GlobalContent.LoadImg("Wizard", true));
                     p.CanAttack = true;
                     p.damage = 2;
-                    p.MaxHP = 5;
+                    p.MaxHP = 10;
                     break;
                 case EType.healer:
                     p.SetImg(GlobalContent.LoadImg("Healer", true));
-                    p.MaxHP = 15;
+                    p.MaxHP = 18;
                     p.damage = 1;
                     break;
                 case EType.ranger:
                     p.SetImg(GlobalContent.LoadImg("Ranger", true));
                     p.damage = 2;
-                    p.MaxHP = 5;
+                    p.MaxHP = 10;
                     break;
                 case EType.buff_guy:
                     p.SetImg(GlobalContent.LoadImg("Buff_Guy", true));
                     //p.CanAttack = true;
                     p.damage = 1;
-                    p.MaxHP = 10;
+                    p.MaxHP = 15;
                     break;
                 case EType.stoner:
                     p.SetImg(GlobalContent.LoadImg("Stoner", true));
                     p.CanAttack = true;
                     p.damage = 1;
-                    p.MaxHP = 10;
+                    p.MaxHP = 20;
                     break;
 
                 case EType.Stone:
@@ -288,55 +289,72 @@ namespace OutOfControl
                     p.isEnemy = true;
                     p.CanAttack = true;
                     p.damage = 2;
-                    p.MaxHP = 5;
+                    p.MaxHP = 10;
 
                     p.MoveSet.Add(ActionManager.Action.attack);
                     p.MoveSet.Add(ActionManager.Action.attack);
-                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
 
                     break;
                 case EType.DarkKnight:
                     p.SetImg(GlobalContent.LoadImg("DarkKnight", true));
                     p.isEnemy = true;
                     p.CanAttack = true;
-                    p.damage = 3;
-                    p.MaxHP = 5;
+                    p.damage = 2;
+                    p.MaxHP = 10;
 
                     p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
                     p.MoveSet.Add(ActionManager.Action.attack);
                     p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
-                    p.MoveSet.Add(ActionManager.Action.attack);
-                    p.MoveSet.Add(ActionManager.Action.no);
-                    p.MoveSet.Add(ActionManager.Action.no);
+                    
                     break;
                 case EType.DarkWizard:
                     p.SetImg(GlobalContent.LoadImg("DarkWizard", true));
                     p.isEnemy = true;
                     p.CanAttack = true;
                     p.damage = 1;
-                    p.MaxHP = 5;
+                    p.MaxHP = 10;
 
                     p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
+                    p.MoveSet.Add(ActionManager.Action.freeze);
                     p.MoveSet.Add(ActionManager.Action.fireball);
-                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
                     p.MoveSet.Add(ActionManager.Action.fireball);
-                    p.MoveSet.Add(ActionManager.Action.no);
-                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
                     break;
                 case EType.Witch:
                     p.SetImg(GlobalContent.LoadImg("Witch", true));
                     p.isEnemy = true;
-                    p.MaxHP = 5;
+                    p.MaxHP = 10;
 
-                    p.MoveSet.Add(ActionManager.Action.no);
-                    p.MoveSet.Add(ActionManager.Action.no);
-                    p.MoveSet.Add(ActionManager.Action.no);
-                    p.MoveSet.Add(ActionManager.Action.no);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
+                    p.MoveSet.Add(ActionManager.Action.scatter);
                     p.MoveSet.Add(ActionManager.Action.Curse);
+                    break;
+                case EType.DarkArcher:
+                    p.SetImg(GlobalContent.LoadImg("DarkArcher", true));
+                    p.isEnemy = true;
+                    p.MaxHP = 10;
+                    p.damage = 2;
+                    p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
+                    p.MoveSet.Add(ActionManager.Action.MoveToPlayer);
+                    p.MoveSet.Add(ActionManager.Action.shoot);
 
                     break;
 
 
+            }
+
+            if (p.isEnemy)
+            {
+                p.HPbar.Color = Color.Red;
+            }
+            else
+            {
+                p.HPbar.Color = Color.Green;
             }
 
             p.level = level;
@@ -369,6 +387,82 @@ namespace OutOfControl
             FreezeAmount = n;
             color = Color.Blue;  
         }
+
+        public void FullDescription()
+        {
+            Gameplay.chat.AddLine();
+            Gameplay.chat.AddLotsOfText("HP: " + HP + " / " + MaxHP);
+            Gameplay.chat.AddLotsOfText("Level: " + level);
+            Gameplay.chat.AddLotsOfText("Is evil: " + isEnemy);
+            Gameplay.chat.AddLotsOfText("Can attack: " + CanAttack);
+            Gameplay.chat.AddLotsOfText("Damage: " + PreCalcDamage());
+            if (FreezeAmount > 0)
+            {
+                Gameplay.chat.AddLotsOfText("Frozen for " + FreezeAmount + " turns");
+            }
+            if (DefenceBuff > 0)
+            {
+                Gameplay.chat.AddLotsOfText("Buffed defence for " + DefenceBuff + " turns");
+            }
+            if (StrengthBuff > 0)
+            {
+                Gameplay.chat.AddLotsOfText("Buffed attack for " + StrengthBuff + " turns");
+            }
+            Gameplay.chat.AddLotsOfText("");
+
+
+            Description(type);
+
+        }
+
+        public static void Description(EType a)
+        {
+   
+            switch (a)
+            {
+                case EType.warrior:
+                    Gameplay.chat.AddLotsOfText("A simple guy. He sees a bad guy, he smacks a bad guy. Can use a strong attack action. Can perform a default attack");
+                    break;
+                case EType.wizard:
+                    Gameplay.chat.AddLotsOfText("An explosion fanatic. He casts fireball spells and freeze spells. Very good for crowd controll. Can perform a default attack");
+                    break;
+                case EType.healer:
+                    Gameplay.chat.AddLotsOfText("Supportive guy but kind of a freak. He heals his allies with questionable medicine.");
+                    break;
+                case EType.ranger:
+                    Gameplay.chat.AddLotsOfText("A sneaky long range fighter. He can shoot enemies form any point on the map. (hint hint! makes your life easier)");
+                    break;
+                case EType.buff_guy:
+                    Gameplay.chat.AddLotsOfText("A local waifu! The best character in the game. He's very handsome. Oh and I guess he can buff your allies but who cares about that");
+                    break;
+                case EType.stoner:
+                    Gameplay.chat.AddLotsOfText("Yes, That's right. He's called a stoner. He carries stones around him all the time for some reason. Can break and place stones");
+                    break;
+                case EType.Stone:
+                    Gameplay.chat.AddLotsOfText("It's not just a boulder. It's a rock");
+                    break;
+                case EType.Skeleton:
+                    Gameplay.chat.AddLotsOfText("An evil guy. He's mostly dead... I think");
+
+                    break;
+                case EType.Witch:
+                    Gameplay.chat.AddLotsOfText("An old woman with a cat. She's mostly harmless but every once in a while she might curse you if she's not in a good mood");
+                    break;
+                case EType.DarkWizard:
+                    Gameplay.chat.AddLotsOfText("An evil brother of the Wizard. Yes, he has like a hundreed of evil brothers. Can do the same thisngs as the Wizard");
+
+                    break;
+                case EType.DarkKnight:
+                    Gameplay.chat.AddLotsOfText("Very aggressive Knight. He will always try to be close to you, so that he could slap you very hard");
+
+                    break;
+                case EType.DarkArcher:
+                    Gameplay.chat.AddLotsOfText("These guys are for game balance... And evil or whatever. They shoot you from every place on the map");
+
+                    break;
+            }
+        }
+
 
         public override void Destruct()
         {

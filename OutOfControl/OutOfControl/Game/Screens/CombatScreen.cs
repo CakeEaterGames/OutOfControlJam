@@ -14,6 +14,7 @@ namespace OutOfControl
         public static Random RNG;
         public int gridW;
         public int level;
+
         public CombatScreen()
         {
             RNG = new Random();
@@ -30,6 +31,7 @@ namespace OutOfControl
             fg2.SetImg(GlobalContent.LoadImg("fg2", true)).
             Scale(5).
             AddUR(this);
+
 
 
         }
@@ -79,6 +81,12 @@ namespace OutOfControl
                     a++;
                 }
                 p = Grid.FindEmptySpace(true);
+                if (a < enemyCount && RNG.NextDouble() < 0.3)
+                {
+                    Entity.CreateByType(Entity.EType.DarkArcher, Grid, p.X, p.Y, (int)(level / 10));
+                    a++;
+                }
+                p = Grid.FindEmptySpace(true);
                 if (a < enemyCount && RNG.NextDouble() < 0.2)
                 {
                     Entity.CreateByType(Entity.EType.DarkKnight, Grid, p.X, p.Y, (int)(level / 10));
@@ -97,6 +105,12 @@ namespace OutOfControl
                     a++;
                 }
 
+            }
+
+            for (int i = 0; i <= RNG.Next(0, level / 2); i++)
+            {
+                var p = Grid.FindEmptySpace(true);
+                Entity.CreateByType(Entity.EType.Stone, Grid, p.X, p.Y, (int)(level / 10));
             }
 
         }
@@ -264,16 +278,31 @@ namespace OutOfControl
                     foreach (var d in Dice.All)
                     {
 
-                        if (d.GetAbsoluteRect().Contains((int)KEY.MouseX, (int)KEY.MouseY) && KEY.LClick)
+                        if (d.GetAbsoluteRect().Contains((int)KEY.MouseX, (int)KEY.MouseY))
                         {
-                            bufferDice = d;
-                            //  ActionManager.PerformActionAll(d.Action, false, d.isGolden);
-                            foreach (var dd in Dice.All)
+                            if (KEY.LClick)
                             {
-                                dd.clearDice();
+                                if (d.IsPlaying)
+                                {
+                                    d.QickStopRot();
+                                }
+                                else
+                                {
+                                    bufferDice = d;
+                                    //  ActionManager.PerformActionAll(d.Action, false, d.isGolden);
+                                    foreach (var dd in Dice.All)
+                                    {
+                                        dd.clearDice();
+                                    }
+                                    BattleState = BattleStates.WaitAfterSelect;
+                                    BattleTimer = 60;
+                                }
                             }
-                            BattleState = BattleStates.WaitAfterSelect;
-                            BattleTimer = 60;
+
+                            if (KEY.RClick)
+                            {
+                                ActionManager.Description(d.Action);
+                            }
                         }
 
 
@@ -286,10 +315,19 @@ namespace OutOfControl
                     break;
                 case BattleStates.WaitAfterSelect:
                     BattleTimer--;
+                    if (KEY.LClick && BattleTimer > 30)
+                    {
+                        BattleTimer = 30;
+                    }
+                    else if (KEY.LClick && BattleTimer > 0)
+                    {
+                        BattleTimer = 0;
+                    }
                     if (BattleTimer == 30)
                     {
                         ActionManager.PerformActionAll(bufferDice.Action, false, bufferDice.isGolden);
                     }
+                    else
                     if (BattleTimer <= 0)
                     {
                         ActionManager.EnemyTurn();
@@ -299,9 +337,8 @@ namespace OutOfControl
                         {
                             Gameplay.self.AfterCombat();
                         }
-                        else  if (Grid.Friends == 0)
+                        else if (Grid.Friends == 0)
                         {
-
                             Gameplay.self.Death();
                         }
 

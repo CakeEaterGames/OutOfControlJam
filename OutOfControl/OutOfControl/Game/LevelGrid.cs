@@ -79,7 +79,7 @@ namespace OutOfControl
 
             foreach (Entity e in this.Entities)
             {
-                if (e.type != Entity.EType.Stone)
+                if (e != null && e.type != Entity.EType.Stone)
                 {
                     if (e.isEnemy)
                     { 

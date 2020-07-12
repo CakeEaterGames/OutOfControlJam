@@ -143,6 +143,8 @@ namespace OutOfControl
         public void StopRot()
         {
             GotoAndStop(0);
+
+            RotationSpeed /= 10;
             Frames.Clear();
             SetImg(GlobalContent.LoadImg(ActionImages[Action], true));
 
@@ -198,11 +200,19 @@ namespace OutOfControl
                 ActionImages.Add(ActionManager.Action.strongAttack, "StrongAttackDice");
                 ActionImages.Add(ActionManager.Action.swap, "SwapDice");
                 ActionImages.Add(ActionManager.Action.up, "UpDice");
-
             }
 
         }
 
+        public void QickStopRot()
+        {
+            StopRot();
+            if ((Action == ActionManager.Action.up) || (Action == ActionManager.Action.right) || (Action == ActionManager.Action.left) || (Action == ActionManager.Action.down))
+            {
+                Rotation = (Gameplay.RNG.NextDouble() - 0.5) * (Math.PI / 10);
+                Rotation = RotationGoal;
+            }
+        }
 
-    }
+     }
 }

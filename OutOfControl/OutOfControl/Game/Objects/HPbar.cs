@@ -15,6 +15,8 @@ namespace OutOfControl
         GameObject frame;
         GameObject bar;
 
+        public Color Color { get => bar.color; set => bar.color = value; }
+
         public HPbar()
         {
              frame = new GameObject(GlobalContent.LoadImg("hp frame", true));

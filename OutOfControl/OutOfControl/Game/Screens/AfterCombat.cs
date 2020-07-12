@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OutOfControl.Gameplay;
+
 
 namespace OutOfControl
 {
@@ -14,9 +14,16 @@ namespace OutOfControl
         public AfterCombatScreen()
         {
             GameObject bg = new GameObject();
-            bg.SetImg(GlobalContent.LoadImg("bg", true)).Scale(5).
+            bg.SetImg(GlobalContent.LoadImg("BackgroundShop", true)).Scale(5).
             AddUR(this);
 
+            GameObject Guy = new GameObject();
+            Guy.SetImg(GlobalContent.LoadImg("ShopGuy", true)).Scale(5).
+            AddUR(this);
+
+            GameObject TB = new GameObject();
+            TB.SetImg(GlobalContent.LoadImg("TextBoxShop", true)).Scale(5).
+            AddUR(this);
 
             PlaceButtons();
         }
@@ -24,24 +31,32 @@ namespace OutOfControl
         List<Button> buttons = new List<Button>();
         public void PlaceButtons()
         {
-            if (Gameplay.RNG.NextDouble() < 0.25)
+            if (Gameplay.RNG.NextDouble() < 0.9)
             {
                 var b = new HireBtn();
 
                 var t = Entity.GetHire();
+
+                b.isCursed = (Gameplay.RNG.NextDouble() < 0.25);
                 b.type = t;
+                b.updateText();
                 buttons.Add(b);
             }
-            if (Gameplay.RNG.NextDouble() < 0.25)
+            if (Gameplay.RNG.NextDouble() < 0.8)
             {
                 var b = new LevelUpBtn();
                 var w = Gameplay.Warriors[Gameplay.RNG.Next(0, Gameplay.Warriors.Count)];
+
+                b.isCursed = (Gameplay.RNG.NextDouble() < 0.25);
                 b.entity = w;
+                b.updateText();
                 buttons.Add(b);
             }
-            if (Gameplay.RNG.NextDouble() < 0.25)
+            if (Gameplay.RNG.NextDouble() < 0.8)
             {
                 var b = new DiceBtn();
+                b.isCursed = (Gameplay.RNG.NextDouble() < 0.25);
+                b.updateText();
                 buttons.Add(b);
             }
             var bb = new SkipBtn();
@@ -52,14 +67,13 @@ namespace OutOfControl
                 b.ParentClass = this;
                 b.AddUR(this);
                 b.Scale(3);
-                b.SetXY(1280 / 2, 720 / 2 + i * 100 - (buttons.Count / 2.0));
+                b.SetXY(1280 / 2, 720 / 2 +( i  - (buttons.Count / 2.0) ) * 100);
             }
         }
 
         public void Leave()
         {
             Gameplay.level++;
-            //Gameplay.level++;
             KEY.ResetClicks();
             Gameplay.self.Combat();
         }
@@ -69,33 +83,58 @@ namespace OutOfControl
     {
  
         public Entity.EType type = Entity.EType.warrior;
+        public bool isCursed = false;
         public HireBtn()
         {
+         
+        }
+        public void updateText()
+        {
             textField.text = "Hire a " + type;
+            if (isCursed)
+            {
+                textField.text += " But get a CURSE!";
+            }
         }
         public override void Click()
         {
-            var w = new SaveWarrior();
+            var w = new Gameplay.SaveWarrior();
             w.level = 1;
-            w.type = Entity.EType.warrior;
+            w.type = type;
             Gameplay.Warriors.Add(w);
             Gameplay.ActionManager.AddCharToPool(w.type);
             ((AfterCombatScreen)ParentClass).Leave();
-
+            if (isCursed)
+            {
+                Gameplay.GiveCurse();
+            }
         }
     }
 
     class LevelUpBtn : Button
     {
-        public SaveWarrior entity;
+        public Gameplay.SaveWarrior entity;
+        public bool isCursed = false;
         public LevelUpBtn()
         {
-            textField.text = "Level up" + entity.type + " to level " + (entity.level + 1)+" "+ entity.level ;
+           
 
+        }
+        public void updateText()
+        {
+            textField.text = "Level up " + entity.type + " to level " + (entity.level + 1);
+            if (isCursed)
+            {
+                textField.text += " But get a CURSE!";
+            }
         }
         public override void Click()
         {
             entity.level++;
+            if (isCursed)
+            {
+                Gameplay.GiveCurse();
+            }
             ((AfterCombatScreen)ParentClass).Leave();
         }
     }
@@ -103,14 +142,27 @@ namespace OutOfControl
     class DiceBtn : Button
     {
         public int amount = 1;
+        public bool isCursed = false;
         public DiceBtn()
         {
+            
+        }
+        public void updateText()
+        {
             textField.text = "+" + amount + " Dice";
+            if (isCursed)
+            {
+                textField.text += " But get a CURSE!";
+            }
         }
         public override void Click()
         {
             Gameplay.DiceCount += amount;
             ((AfterCombatScreen)ParentClass).Leave();
+            if (isCursed)
+            {
+                Gameplay.GiveCurse();
+            }
         }
     }
 
@@ -119,6 +171,7 @@ namespace OutOfControl
         public SkipBtn()
         {
             textField.text = "Skip";
+
         }
         public override void Click()
         {

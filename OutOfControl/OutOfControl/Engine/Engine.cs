@@ -47,7 +47,7 @@ namespace OutOfControl
 
             Fonts.LoadFonts();
 
-            TextField.defaultFont = Content.Load<SpriteFont>("Fonts\\Arial");
+            TextField.defaultFont = Content.Load<SpriteFont>("Fonts\\Font");
             AudioManager.Init();
             Sounds.Init();
             screen = new MainScreen();

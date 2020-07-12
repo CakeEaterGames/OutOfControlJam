@@ -13,9 +13,11 @@ namespace OutOfControl
     {
         public static double global_Luck = 1;
         public static double global_Despair = 1;
+        public static double CurseCount = 0;
 
-        public static int level = 28;
+        public static int level = 1;
         public static int DiceCount = 3;
+
 
         public struct SaveWarrior
         {
@@ -30,6 +32,8 @@ namespace OutOfControl
 
         public static Gameplay self;
 
+        public static ChatBox chat = new ChatBox();
+
         public Gameplay()
         {
             self = this;
@@ -37,7 +41,7 @@ namespace OutOfControl
             ActionManager = new ActionManager();
            
 
-            for (int i = 0; i <2; i++)
+            for (int i = 0; i <1; i++)
             {
                 var a = new SaveWarrior();
                 a.type = Entity.EType.warrior;
@@ -46,11 +50,32 @@ namespace OutOfControl
 
                 ActionManager.AddCharToPool(Entity.EType.warrior);
             }
+            {
+                var a = new SaveWarrior();
+                a.type = Entity.EType.ranger;
+                a.level = 1;
+                Warriors.Add(a);
+
+                ActionManager.AddCharToPool(Entity.EType.ranger);
+
+            }
+
+
+          
+          
 
 
             //Combat();
 
-            AfterCombat();
+            //AfterCombat();
+
+            //Death();
+
+            MainMenu();
+
+           // chat.addText("hello world");
+         //   chat.AddUR(this);
+            
         }
 
         public Scene CurrentScene;
@@ -60,12 +85,14 @@ namespace OutOfControl
             if(CurrentScene != null)
             CurrentScene.Destruct();
             CombatScreen comb = new CombatScreen();
-            comb.level = 1;
+            comb.level = level;
             comb.AddUR(this);
             comb.ActionManager = ActionManager;
             comb.StartFight();
 
             CurrentScene = comb;
+            chat.RemoveRender();
+            chat.AddRender(this);
         }
         public void AfterCombat()
         {
@@ -74,18 +101,47 @@ namespace OutOfControl
             AfterCombatScreen c = new AfterCombatScreen();
             c.AddUR(this);
             CurrentScene = c;
+
+            chat.RemoveRender();
+            chat.AddRender(this);
         }
         public void Death()
         {
             if (CurrentScene != null)
                 CurrentScene.Destruct();
 
+            CurrentScene = new GameOverScreen();
+
+            chat.RemoveRender();
+            chat.AddRender(this);
+
         }
-     
+        public void MainMenu()
+        {
+            if (CurrentScene != null)
+                CurrentScene.Destruct();
+
+            CurrentScene = new MainMenu();
+            CurrentScene.AddUR(this);
+
+            chat.RemoveRender();
+            chat.AddRender(this);
+
+        }
+
         public override void Update()
         {
+         /*   if (KEY.IsTyped(Keys.T))
+            {
+                chat.AddLine();
+                chat.AddLotsOfText("Hello this is a very long text just to test if everything works yay lel test test test test test test test test");
+            }*/
          
-         
+        }
+
+        public static void GiveCurse()
+        {
+            CurseCount++;
         }
     }
 }

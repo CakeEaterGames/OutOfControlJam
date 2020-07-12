@@ -19,7 +19,7 @@ namespace OutOfControl
             CoreWidth = 1280;
             CoreHeight = 720;
             Fps = 60;
-            BgColor = Color.White;
+            BgColor = Color.Black;
 
             AllowedResolutions.Add(new Point(CoreWidth, CoreHeight));  //0
             AllowedResolutions.Add(new Point(Engine.FullScreenW, Engine.FullScreenH));   //1

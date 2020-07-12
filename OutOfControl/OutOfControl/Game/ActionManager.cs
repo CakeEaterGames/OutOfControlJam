@@ -172,15 +172,28 @@ namespace OutOfControl
                 e.HP -= (int)Damage;
             }
 
-
-
             e.ShakeAnim();
             if (e.HP <= 0)
             {
                 e.Destruct();
                 grid.RemoveEntity(e);
                 grid.Entities[grid.Entities.IndexOf(e)] = null;
+
+                var st = e.type;
+                var sl = e.level;
+                for (int i=0;i<Gameplay.Warriors.Count ;i++)
+                {
+                    var a = Gameplay.Warriors[i];
+                    if (a.type == st && a.level == sl)
+                    {
+                        Gameplay.Warriors.RemoveAt(i);
+                        break;
+                    }
+                }
+
             }
+
+
         }
 
         public void ExplodeAct(Entity e, double Damage)
@@ -257,13 +270,14 @@ namespace OutOfControl
                             break;
 
                         case Action.scatter:
-                            var a = Gameplay.RNG.Next(0, 5);
+                            var a = Gameplay.RNG.Next(1, 6);
                             switch (a)
                             {
                                 case 1: moveAct(e, Action.up); break;
                                 case 2: moveAct(e, Action.down); break;
                                 case 3: moveAct(e, Action.left); break;
                                 case 4: moveAct(e, Action.right); break;
+                                case 5: moveAct(e, Action.up); break;
                             }
                             break;
                         case Action.swap:
@@ -495,7 +509,7 @@ namespace OutOfControl
                             break;
 
                         case Action.shoot:
-                            if (e.type == Entity.EType.ranger)
+                            if (e.type == Entity.EType.ranger || (e.type == Entity.EType.DarkArcher))
                             {
                                 int goal = Gameplay.RNG.Next(0, grid.Entities.Count);
                                 int i = goal;
@@ -619,6 +633,109 @@ namespace OutOfControl
                     }
                     break;
             }
+        }
+
+
+
+        public void Description(Action a)
+        {
+            Gameplay.chat.AddLine();
+            switch (a)
+            {
+                case ActionManager.Action.no:
+                    Gameplay.chat.AddLotsOfText("Doesn't do anything");
+                    break;
+                case ActionManager.Action.attack:
+                    Gameplay.chat.AddLotsOfText("Deals damage to the characters that are in front of other characters");
+                    break;
+                case ActionManager.Action.strongAttack:
+                    Gameplay.chat.AddLotsOfText("Deals A LOT damage to the characters that are in front of the warriors");
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.warrior);
+                    break;
+                case ActionManager.Action.up:
+                    Gameplay.chat.AddLotsOfText("Move up by one tile");
+                    break;
+                case ActionManager.Action.down:
+                    Gameplay.chat.AddLotsOfText("Move down by one tile");
+                    break;
+                case ActionManager.Action.left:
+                    Gameplay.chat.AddLotsOfText("Move to the left by one tile");
+                    break;
+                case ActionManager.Action.right:
+                    Gameplay.chat.AddLotsOfText("Move to the right by one tile");
+                    break;
+                case ActionManager.Action.swap:
+                    Gameplay.chat.AddLotsOfText("Swap all characters... sometimes???");
+                    break;
+                case ActionManager.Action.scatter:
+                    Gameplay.chat.AddLotsOfText("Move in random directions... sometimes???");
+                    break;
+                case ActionManager.Action.fireball:
+                    Gameplay.chat.AddLotsOfText("Casts a fireball that explodes in 8 directions");
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.wizard);
+
+                    break;
+                case ActionManager.Action.freeze:
+                    Gameplay.chat.AddLotsOfText("Freezes a character for a few turns");
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.wizard);
+
+                    break;
+                case ActionManager.Action.heal:
+                    Gameplay.chat.AddLotsOfText("Heals a random ally");
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.healer);
+
+                    break;
+                case ActionManager.Action.healAll:
+                    Gameplay.chat.AddLotsOfText("Heals all allies, but only a little bit");
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.healer);
+                    break;
+                case ActionManager.Action.shoot:
+                    Gameplay.chat.AddLotsOfText("Doesn't have to be in front of the character");
+                    Gameplay.chat.AddLotsOfText("Shoots a random enemy on the map");
+
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.ranger);
+
+                    break;
+                case ActionManager.Action.atack_buff:
+                    Gameplay.chat.AddLotsOfText("Can also boost other stats like healing power");
+                    Gameplay.chat.AddLotsOfText("Gives a random ally an attack buff for a few turns");
+
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.buff_guy);
+                    break;
+                case ActionManager.Action.defence_buff:
+                    Gameplay.chat.AddLotsOfText("Gives a random ally a defence buff for a few turns");
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.buff_guy);
+                    break;
+                case ActionManager.Action.addStone:
+                    Gameplay.chat.AddLotsOfText("Yes... He has a lot of stones with him");
+                    Gameplay.chat.AddLotsOfText("Plases a stone somewhere on the map...");
+    
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.stoner);
+                    break;
+                case ActionManager.Action.breakStone:
+                    Gameplay.chat.AddLotsOfText("Apparantly he collects them");
+                    Gameplay.chat.AddLotsOfText("Grabs a random stone from the map");
+               
+                    Gameplay.chat.AddLotsOfText("Only for the " + Entity.EType.stoner);
+                    break;
+                case ActionManager.Action.MoveToPlayer:
+                    Gameplay.chat.AddLotsOfText("Moves closer towards any friendly character");
+                    break;
+                case ActionManager.Action.Curse:
+                    Gameplay.chat.AddLotsOfText("Avoid at all cost");
+                    Gameplay.chat.AddLotsOfText("Adds a PERMANENT debuff to your squad");
+                    break;
+                case ActionManager.Action.cursed:
+                    Gameplay.chat.AddLotsOfText("Yep... that's a curse");
+                    break;
+                case ActionManager.Action.defence:
+                case ActionManager.Action.guard:
+                    Gameplay.chat.AddLotsOfText("Boosts a defence for a while");
+                    break;
+            }
+          //  Gameplay.chat.AddLotsOfText("Boosts a defence for a while");
+         //   Gameplay.chat.AddLine();
+
         }
 
     }

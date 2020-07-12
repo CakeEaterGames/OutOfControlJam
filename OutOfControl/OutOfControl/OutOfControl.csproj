@@ -75,11 +75,12 @@
     <Compile Include="Game\Objects\Button.cs" />
     <Compile Include="Game\Screens\AfterCombat.cs" />
     <Compile Include="Game\Screens\CombatScreen.cs" />
-    <Compile Include="Game\Dice.cs" />
-    <Compile Include="Game\Entity.cs" />
+    <Compile Include="Game\Objects\Dice.cs" />
+    <Compile Include="Game\Objects\Entity.cs" />
     <Compile Include="Game\Gameplay.cs" />
-    <Compile Include="Game\HPbar.cs" />
+    <Compile Include="Game\Objects\HPbar.cs" />
     <Compile Include="Game\LevelGrid.cs" />
+    <Compile Include="Game\Screens\GameOverScreen.cs" />
     <Compile Include="Game\Screens\MainMenu.cs" />
     <Compile Include="Game\Screens\PreMainMenu.cs" />
     <Compile Include="Program.cs" />
@@ -102,6 +103,18 @@
     <Content Include="Content\Images\x64.png" />
     <Content Include="Content\Images\x8.png" />
     <Content Include="Icon.ico" />
+    <EmbeddedResource Include="Resources\Images\UI\Menu\ExitBttn.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Menu\MenuDudes.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Menu\MenuGrass.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Menu\MenuLogo.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Menu\MenuTrees.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Menu\PlayBttn.png" />
+    <EmbeddedResource Include="Resources\Images\UI\GameOver\GameOver.png" />
+    <EmbeddedResource Include="Resources\Images\UI\GameOver\GameOverText.png" />
+    <EmbeddedResource Include="Resources\Images\Entities\enemies\DarkArcher.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Shop\BackgroundShop.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Shop\ShopGuy.png" />
+    <EmbeddedResource Include="Resources\Images\UI\Shop\TextBoxShop.png" />
     <EmbeddedResource Include="Resources\Images\UI\btn.png" />
     <EmbeddedResource Include="Resources\Images\Dice\DiceFlash.png" />
     <EmbeddedResource Include="Resources\Images\Dice\DiceFrame.png" />
@@ -159,6 +172,10 @@
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Content\Fonts\Arial.spritefont" />
+    <None Include="Content\Fonts\font.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Game\Objects\Chat.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
