@@ -69,6 +69,30 @@ namespace OutOfControl
             DrawGrid();
         }
 
+        public int Enemies = 0;
+        public int Friends = 0;
+
+        public void CountEntities()
+        {
+            Enemies = 0;
+            Friends = 0;
+
+            foreach (Entity e in this.Entities)
+            {
+                if (e.type != Entity.EType.Stone)
+                {
+                    if (e.isEnemy)
+                    { 
+                        Enemies++;
+                    }
+                    else
+                    {
+                        Friends++;
+                    }
+                }
+            }
+        }
+
         public Point FindEmptySpace(bool forEnemy)
         {
             Point p = new Point(0, 0);

@@ -22,6 +22,7 @@ namespace MonoCake.Objects
 
         public Rectangle hitbox = new Rectangle();
         public double alignX = 0;
+        public double alignY = 0;
 
         private double scaleW = 1;
         private double scaleH = 1;
@@ -36,6 +37,7 @@ namespace MonoCake.Objects
             custom
         }
         public Align alignment = Align.left;
+        public Align alignmentH = Align.left;
 
         public TextField()
             : this("", Color.Black, defaultFont)
@@ -113,9 +115,23 @@ namespace MonoCake.Objects
                     break;
             }
 
+            switch (alignmentH)
+            {
+                case Align.left:
+                    alignY= 0;
+                    break;
+                case Align.right:
+                    alignY = -font.MeasureString(text.ToString()).Y * ScaleH;
+                    break;
+                case Align.center:
+                    alignY = -(font.MeasureString(text.ToString()).Y / 2) * ScaleH;
+                    break;
+            }
+
+
             return new Vector2(
                (float)(X + alignX),
-               (float)(Y)
+               (float)(Y + alignY)
                );
         }
 

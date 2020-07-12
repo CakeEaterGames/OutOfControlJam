@@ -72,11 +72,16 @@
     <Compile Include="Engine\MainScreen.cs" />
     <Compile Include="Engine\Sounds.cs" />
     <Compile Include="Game\ActionManager.cs" />
+    <Compile Include="Game\Objects\Button.cs" />
+    <Compile Include="Game\Screens\AfterCombat.cs" />
+    <Compile Include="Game\Screens\CombatScreen.cs" />
     <Compile Include="Game\Dice.cs" />
     <Compile Include="Game\Entity.cs" />
     <Compile Include="Game\Gameplay.cs" />
     <Compile Include="Game\HPbar.cs" />
     <Compile Include="Game\LevelGrid.cs" />
+    <Compile Include="Game\Screens\MainMenu.cs" />
+    <Compile Include="Game\Screens\PreMainMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game\Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,6 +102,7 @@
     <Content Include="Content\Images\x64.png" />
     <Content Include="Content\Images\x8.png" />
     <Content Include="Icon.ico" />
+    <EmbeddedResource Include="Resources\Images\UI\btn.png" />
     <EmbeddedResource Include="Resources\Images\Dice\DiceFlash.png" />
     <EmbeddedResource Include="Resources\Images\Dice\DiceFrame.png" />
     <EmbeddedResource Include="Resources\Images\Dice\DiceGoldFrame.png" />

@@ -43,8 +43,28 @@ namespace OutOfControl
             Mark.Alpha = 0;
             Mark.AddUR(this);
             Mark.SetImg(GlobalContent.LoadImg("Freeze",true));
+
+           
         }
 
+        public static EType GetHire()
+        {
+            if (HireList == null)
+            {
+                HireList = new List<EType>();
+                HireList.Add(EType.warrior);
+                HireList.Add(EType.wizard);
+                HireList.Add(EType.wizard);
+                HireList.Add(EType.wizard);
+                HireList.Add(EType.stoner);
+                HireList.Add(EType.ranger);
+                HireList.Add(EType.healer);
+                HireList.Add(EType.buff_guy);
+            }
+
+
+            return HireList[Gameplay.RNG.Next(0, HireList.Count)];
+        }
 
         public double GoalX = 0;
         public double GoalY = 0;
@@ -164,9 +184,10 @@ namespace OutOfControl
             Witch,
             DarkWizard,
             DarkKnight
-
         };
 
+        public static List<EType> HireList;
+        
        
         public void MarkAnim(string image)
         {

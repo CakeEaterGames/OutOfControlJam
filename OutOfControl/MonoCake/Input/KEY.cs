@@ -65,6 +65,14 @@ namespace MonoCake
                 return false;
             }
         }
+
+        public static void ResetClicks()
+        {
+            lc = false;
+            rc = false;
+            keysTyped.Clear();
+        }
+
         public static bool WheelDown
         {
             get
