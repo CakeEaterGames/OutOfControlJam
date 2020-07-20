@@ -90,31 +90,31 @@ namespace Pellicalo
                 var p = Grid.FindEmptySpace(true);
                 if (a < enemyCount && RNG.NextDouble() < 0.25)
                 {
-                    Entity.CreateByType(Entity.EType.Skeleton, Grid, p.X, p.Y, (int)(level / 10));
+                    Entity.CreateByType(Entity.EType.Skeleton, Grid, p.X, p.Y,0);
                     a++;
                 }
                 p = Grid.FindEmptySpace(true);
                 if (a < enemyCount && RNG.NextDouble() < 0.3)
                 {
-                    Entity.CreateByType(Entity.EType.DarkArcher, Grid, p.X, p.Y, (int)(level / 10));
+                    Entity.CreateByType(Entity.EType.DarkArcher, Grid, p.X, p.Y,0);
                     a++;
                 }
                 p = Grid.FindEmptySpace(true);
                 if (a < enemyCount && RNG.NextDouble() < 0.2)
                 {
-                    Entity.CreateByType(Entity.EType.DarkKnight, Grid, p.X, p.Y, (int)(level / 10));
+                    Entity.CreateByType(Entity.EType.DarkKnight, Grid, p.X, p.Y, 0);
                     a++;
                 }
                 p = Grid.FindEmptySpace(true);
                 if (a < enemyCount && RNG.NextDouble() < 0.15)
                 {
-                    Entity.CreateByType(Entity.EType.DarkWizard, Grid, p.X, p.Y, (int)(level / 10));
+                    Entity.CreateByType(Entity.EType.DarkWizard, Grid, p.X, p.Y, 0);
                     a++;
                 }
                 p = Grid.FindEmptySpace(true);
                 if (a < enemyCount && RNG.NextDouble() < 0.1)
                 {
-                    Entity.CreateByType(Entity.EType.Witch, Grid, p.X, p.Y, (int)(level / 10));
+                    Entity.CreateByType(Entity.EType.Witch, Grid, p.X, p.Y, 0);
                     a++;
                 }
 
@@ -123,7 +123,7 @@ namespace Pellicalo
             for (int i = 0; i <= RNG.Next(0, level / 2); i++)
             {
                 var p = Grid.FindEmptySpace(true);
-                Entity.CreateByType(Entity.EType.Stone, Grid, p.X, p.Y, (int)(level / 10));
+                Entity.CreateByType(Entity.EType.Stone, Grid, p.X, p.Y, 0);
             }
 
         }
