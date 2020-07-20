@@ -179,10 +179,7 @@ namespace Pellicalo
             {
                 e.Destruct();
                 grid.RemoveEntity(e);
-
-                var index = grid.Entities.IndexOf(e);
-                grid.Entities[index] = null;
-                grid.Entities.RemoveAt(index);
+                grid.Entities[grid.Entities.IndexOf(e)] = null;
 
                 var st = e.type;
                 var sl = e.level;
